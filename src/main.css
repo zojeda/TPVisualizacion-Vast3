@@ -1,0 +1,35 @@
+html,
+body,
+.contenido {
+    height: 100%;
+    margin: 0;
+}
+
+
+.contenido {
+    display: flex;
+    flex-flow: column;
+}
+
+.datos {
+    display: flex;
+    flex-flow: row wrap;
+}
+.datos > * {
+    display: flex;
+    flex: 1 auto;
+}
+
+.contenido > * {
+    flex: 1 100%
+}
+
+.selectorTiempo {
+    max-height: 10em;
+}
+
+@media all and (max-width: 700px) {
+    .datos > * {
+        flex: 1 100%;
+    }
+}
