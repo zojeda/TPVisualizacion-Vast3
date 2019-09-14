@@ -13,6 +13,14 @@ module.exports = {
       {
         test: /\.css$/i,
         use: ['style-loader', 'css-loader'],
+      },
+      {
+        test: /\.(png|jpe?g|gif|json|geojson|csv)$/i,
+        use: [
+          {
+            loader: 'file-loader',
+          },
+        ],
       }
      ]
   },

@@ -10,8 +10,18 @@ $ npm install
 $ npm start
 ```
 
-
 ## Para debug
 
 * instalar extensión [Debugger for Chrome](https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-chrome)
 * en la pestaña Debug de VSCode, ejecutar Debug 'Chrome localhost'
+
+
+## Después de hacer pull
+
+```sh
+$ cd <DIR_VAST3>
+$ npm install
+```
+
+para acualizar dependencias que otro pudo haber agregado
+

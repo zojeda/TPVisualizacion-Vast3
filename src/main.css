@@ -33,3 +33,12 @@ body,
         flex: 1 100%;
     }
 }
+
+
+
+.background.bar {
+  fill: #ccc;
+}
+.foreground.bar {
+  fill: steelblue;
+}

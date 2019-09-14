@@ -5,8 +5,8 @@
     "tasks": [
         {
             "type": "npm",
-            "script": "start",
-            "label": "start",
+            "script": "start:debug",
+            "label": "start:debug",
             "isBackground": true,
             "promptOnClose": true,
             "problemMatcher": {

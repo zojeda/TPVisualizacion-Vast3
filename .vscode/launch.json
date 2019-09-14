@@ -10,7 +10,7 @@
             "name": "Chrome localhost",
             "url": "http://localhost:8080",
             "webRoot": "${workspaceFolder}",
-            "preLaunchTask": "start",
+            "preLaunchTask": "start:debug",
             "sourceMaps": true,
             "trace": true
         }
