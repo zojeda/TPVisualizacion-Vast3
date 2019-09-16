@@ -1,0 +1,8 @@
+"0","#jutamos los mensajes originales con la valoracion"
+"0","valorated_tweets <- datos %>%"
+"0","  inner_join(valoracion) %>%"
+"0","  arrange(desc(total))"
+"2","Joining, by = ""id""
+"
+"0","## Escribo un archivo con los tweets valorados"
+"0","write.table(valorated_tweets , file = paste0(data_dir, ""valoratedtweets.csv""), row.names = FALSE)"

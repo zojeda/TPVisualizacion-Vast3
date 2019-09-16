@@ -1,0 +1,29 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1568576038813.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "96666113",
+    "lastKnownWriteTime" : 8315159271145496942,
+    "last_content_update" : 1568576038813,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "cacheKey" : "3A0C8D4B",
+        "caption" : "valorated_tweets",
+        "contentUrl" : "grid_resource/gridviewer.html?env=&obj=valorated_tweets&cache_key=3A0C8D4B",
+        "displayedObservations" : 16671,
+        "environment" : "",
+        "object" : "valorated_tweets",
+        "preview" : 0,
+        "totalObservations" : 16671,
+        "variables" : 12
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_dataframe"
+}

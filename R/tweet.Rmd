@@ -1,0 +1,192 @@
+---
+title: "Earthquake"
+author: "Alejandro Martín Rouiller"
+date: "7 de septiembre de 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+rm(list=ls())
+```
+
+
+```{r}
+library(readr)
+library(dplyr)
+library(lubridate)
+library(tidytext)
+```
+
+```{r}
+data_dir <- 'data/'
+
+servicios <- read_csv(paste0(data_dir, "servicios.csv"))
+blacklist <- read_csv(paste0(data_dir, "blacklist.csv"))
+blacklist_geo <- read_csv(paste0(data_dir, "blacklist_geo.csv"))
+datos <- read_csv(paste0(data_dir, "YInt.csv"))
+  
+```
+
+```{r}
+datos <- datos %>%
+  mutate(
+    id = row_number(),
+    dia = strtoi(day(time)),
+    hora = strtoi(hour(time)),
+    minuto = strtoi(minute(time)),
+    time_id = minuto + hora * 100 + dia * 10000,
+    message = tolower(message)
+  )%>%
+  select(
+    id,
+    time_id,
+    location,
+    account,
+    message
+  )%>%
+  #Elimino los retweet
+  filter(!startsWith(message, "re:"))%>%
+  #Elimino las cuentas en blacklist
+  anti_join(blacklist, by=c("account"="account")) %>%
+  #Elimino los barrios en blacklist
+  anti_join(blacklist_geo, by=c("location"="neighborhood"))
+```
+
+```{r}
+
+##Geramos el listado de palabras sin stopwords
+tweet_tibble <- tibble(id=datos$id,text = datos$message)
+
+tweet_tibble <- tweet_tibble %>%
+  unnest_tokens(word, text)
+
+
+#quitamos stopwords
+data(stop_words)
+
+tweet_tibble <- tweet_tibble %>%
+  anti_join(stop_words)
+
+tidy_tweets <- tweet_tibble %>%
+  count(word, sort = TRUE) 
+
+#Escribo el archivo con las palabras de los tweets
+write.table(tidy_tweets , file = paste0(data_dir, "tidytweets.csv"))
+
+```
+
+```{r}
+#Generamos un dataframe con la valoracion
+valoracion <-
+tweet_tibble %>%
+  left_join(servicios%>%filter(service=="water")%>%rename(water=service), by=c("word"="word"))%>%
+  left_join(servicios%>%filter(service=="roadways")%>%rename(roadways=service), by=c("word"="word"))%>%
+  left_join(servicios%>%filter(service=="gas")%>%rename(gas=service), by=c("word"="word"))%>%
+  left_join(servicios%>%filter(service=="power")%>%rename(power=service), by=c("word"="word"))%>%
+  left_join(servicios%>%filter(service=="healthcare")%>%rename(healthcare=service), by=c("word"="word"))%>%
+  mutate(
+    water = ifelse(is.na(water), 0, 1),
+    roadways = ifelse(is.na(roadways), 0, 1),
+    gas = ifelse(is.na(gas), 0, 1),
+    power = ifelse(is.na(power), 0, 1),
+    healthcare = ifelse(is.na(healthcare), 0, 1)
+  )%>%
+  group_by(id)%>%
+  summarise(
+    water = sum(water),
+    roadways = sum(roadways),
+    gas = sum(gas),
+    power = sum(power),
+    healthcare = sum(healthcare)
+  )%>%
+  mutate(
+    total = water + roadways + gas + power + healthcare
+  )%>%
+  arrange(desc(total))
+
+```
+
+
+```{r}
+#jutamos los mensajes originales con la valoracion
+valorated_tweets <- datos %>%
+  inner_join(valoracion) %>%
+  arrange(desc(total))
+
+## Escribo un archivo con los tweets valorados
+write.table(valorated_tweets , file = paste0(data_dir, "valoratedtweets.csv"), row.names = FALSE)
+
+
+```
+
+
+```{r}
+#Agrupo la valoracion de los tweets por tiempo y barrio
+grouped_tweets <- valorated_tweets %>%
+  group_by(time_id, location)%>%
+  summarise(
+   total = sum(total),
+   water = sum(water),
+   roadways = sum(roadways),
+   gas = sum(gas),
+   power = sum(power),
+   healthcare = sum (healthcare)
+  )%>%
+  arrange(
+    location, time_id
+  )
+
+
+```
+
+
+
+```{r}
+#creo un dataframe de tiempo / geo
+loc <- valorated_tweets %>%
+  distinct(location)
+geo <- c(t(loc))
+
+time <- 
+  expand.grid(
+  #dias
+  seq(6,10,1), 
+  #horas
+  seq (0,23,1), 
+  #minutos
+  seq (0,59, 1),
+  geo) %>%
+  as.data.frame()
+
+colnames(time) <- c('dia', 'hora', 'minuto', 'location')
+
+time <- time %>%
+  mutate(
+    id = minuto + hora * 100 + dia * 10000
+  )%>%
+  select(
+    id, dia, hora, minuto, location
+  )%>%
+  arrange(location, id)
+
+```
+
+```{r}
+#Realizo un join entre el conjunto de todos los datos y el de los tweets valorados
+time %>%
+  left_join(grouped_tweets, by=c("id"="time_id", "location"="location"))%>%
+  mutate(
+    total = ifelse(is.na(total), 0, total),
+    water = ifelse(is.na(water), 0, water),
+    roadways = ifelse(is.na(roadways), 0, roadways),
+    gas = ifelse(is.na(gas), 0, gas),
+    power = ifelse(is.na(power), 0, power),
+    healthcare = ifelse(is.na(healthcare), 0, healthcare)
+  )%>%
+  write.table(file = paste0(data_dir, "tweet-servicio-valoracion.csv"), row.names = FALSE)
+```
+

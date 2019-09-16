@@ -1,0 +1,3 @@
+"0","#Eliminamos los barrios en blacklist"
+"0","datos <- datos %>%"
+"0","  anti_join(blacklist_geo, by=c(""location""=""neighborhood""))"

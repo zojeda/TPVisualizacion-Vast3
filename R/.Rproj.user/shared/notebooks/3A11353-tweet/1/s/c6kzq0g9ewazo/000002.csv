@@ -1,0 +1,3 @@
+"0","#Eliminamos las cuentas en blacklist"
+"0","datos <- datos %>%"
+"0","  anti_join(blacklist, by=c(""account""=""account""))"
