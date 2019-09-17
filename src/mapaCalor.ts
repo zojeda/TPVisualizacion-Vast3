@@ -87,7 +87,9 @@ export function MapaCalor(options: MapaCalorOpciones) {
     .attr("class", "row")
     .attr("transform", function(d, i) {
       return "translate(0," + y(i) + ")";
-    });
+    })
+    .on("mouseover", handleMouseOver)
+    .on("mouseout", handleMouseOut);
 
   var cell = row
     .selectAll(".cell")
@@ -184,9 +186,12 @@ export function MapaCalor(options: MapaCalorOpciones) {
     .attr("y", y.bandwidth() / 2)
     .attr("dy", ".32em")
     .attr("text-anchor", "end")
+    .attr("id", function(d, i) { return labelsrowData[i].replace(/\s/g,'-'); })
     .text(function(d, i) {
       return d;
-    });
+    })
+    .attr("font-size", "16px")
+    .attr("fill", "black");
 
   var key = d3
     .select("#legend")
@@ -234,4 +239,28 @@ export function MapaCalor(options: MapaCalorOpciones) {
     .attr("class", "y axis")
     .attr("transform", "translate(41," + margin.top + ")")
     .call(yAxis);
+
+  // Eventos por Mouse
+  function handleMouseOver(d, i) {  
+    //console.log("Mouse Over", d[i], labelsrowData[i], i);
+
+    // Armo un string con el id de cada componente de texto
+    var selectText = '#'; 
+    var selectText = selectText.concat(labelsrowData[i]).replace(/\s/g,'-'); 
+    //console.log(selectText);
+
+    rowLabels.select(selectText).transition().duration(200)
+    .attr("font-size", "21px")
+    .attr("fill", "red");
+    //console.log("Mouse Over Fin");
+    }
+
+  function handleMouseOut(d, i) {  
+    //console.log("Mouse Out", d[i]);
+    rowLabels.selectAll("text")
+    .data(labelsrowData).transition().duration(200)
+    .attr("font-size", "16px")
+    .attr("fill", "black");
+  }
+
 }
