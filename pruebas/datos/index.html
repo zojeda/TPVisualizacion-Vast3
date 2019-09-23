@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <link rel="shortcut icon" href="#" />
+        <title>Prueba de datos y filtrados</title>
+    </head>
+    <body>
+        <!--Lo que va en este div tiene que ser reemplazado por los extremos del timeSelector-->
+        <div style="height: 50px;">
+            Inicio
+            <input type="text" id="txtInicio" value="60000" />
+            Fin
+            <input type="text" id="txtFin" value="102359" />
+        </div>
+        
+        <button onclick="filtrarDatos(+document.getElementById('txtInicio').value, +document.getElementById('txtFin').value)">Probar</button>
+
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        <script src="https://d3js.org/d3.v5.min.js"></script>
+        <script src="datos.js"> </script>
+    </body>
+</html>

@@ -1,0 +1,57 @@
+"0","servicios <- read_csv(""servicios.csv"")"
+"2","Parsed with column specification:
+cols(
+  word = col_character(),
+  service = col_character()
+)
+"
+"0","blacklist <- read_csv(""blacklist.csv"")"
+"2","Parsed with column specification:
+cols(
+  account = col_character()
+)
+"
+"0","blacklist_geo <- read_csv(""blacklist_geo.csv"")"
+"2","Parsed with column specification:
+cols(
+  neighborhood = col_character()
+)
+"
+"0","datos <- read_csv(""YInt.csv"") %>%"
+"0","  mutate("
+"0","    id = row_number(),"
+"0","    dia = strtoi(day(time)),"
+"0","    hora = strtoi(hour(time)),"
+"0","    minuto = strtoi(minute(time)),"
+"0","    time_id = minuto + hora * 100 + dia * 10000,"
+"0","    message = tolower(message),"
+"0","  #identificamos los mensajes que son retweet"
+"0","    retweet = ifelse("
+"0","      startsWith(message, ""re:""),"
+"0","      ""SI"","
+"0","      ""NO"""
+"0","    )"
+"0","  )%>%"
+"0","  select("
+"0","    id,"
+"0","    time_id,"
+"0","    location,"
+"0","    account,"
+"0","    message,"
+"0","    retweet"
+"0","  )%>%"
+"0","  #Dejamos solo los mensajes que no son retweet"
+"0","  filter("
+"0","    retweet == 'NO'"
+"0","  )"
+"2","Duplicated column names deduplicated: 'message' => 'message_1' [5]"
+"2","Parsed with column specification:
+cols(
+  time = col_datetime(format = """"),
+  location = col_character(),
+  account = col_character(),
+  message = col_character(),
+  message_1 = col_character()
+)
+"
+"0","  "

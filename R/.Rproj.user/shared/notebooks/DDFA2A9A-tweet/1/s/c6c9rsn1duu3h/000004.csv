@@ -1,0 +1,32 @@
+"0","data_dir <- 'data/'"
+"0","servicios <- read_csv(paste0(data_dir, ""servicios.csv""))"
+"2","Parsed with column specification:
+cols(
+  word = col_character(),
+  service = col_character()
+)
+"
+"0","blacklist <- read_csv(paste0(data_dir, ""blacklist.csv""))"
+"2","Parsed with column specification:
+cols(
+  account = col_character()
+)
+"
+"0","blacklist_geo <- read_csv(paste0(data_dir, ""blacklist_geo.csv""))"
+"2","Parsed with column specification:
+cols(
+  neighborhood = col_character()
+)
+"
+"0","datos <- read_csv(paste0(data_dir, ""YInt.csv""))"
+"2","Duplicated column names deduplicated: 'message' => 'message_1' [5]"
+"2","Parsed with column specification:
+cols(
+  time = col_datetime(format = """"),
+  location = col_character(),
+  account = col_character(),
+  message = col_character(),
+  message_1 = col_character()
+)
+"
+"0","  "
