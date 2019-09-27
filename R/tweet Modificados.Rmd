@@ -1,0 +1,289 @@
+---
+title: "Earthquake"
+author: "Alejandro Martín Rouiller"
+date: "7 de septiembre de 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+rm(list=ls())
+```
+
+
+```{r}
+library(readr)
+library(dplyr)
+library(lubridate)
+library(tidytext)
+```
+
+```{r}
+data_dir <- 'data/'
+
+servicios <- read_csv(paste0(data_dir, "serv3.csv"))
+blacklist <- read_csv(paste0(data_dir, "blacklist.csv"))
+blacklist_geo <- read_csv(paste0(data_dir, "blacklist_geo.csv"))
+datos <- read_csv(paste0(data_dir, "YInt.csv"))
+  
+```
+
+```{r}
+datos <- datos %>%
+  mutate(
+    id = row_number(),
+    dia = strtoi(day(time)),
+    hora = strtoi(hour(time)),
+    minuto = strtoi(minute(time)),
+    time_id = minuto + hora * 100 + dia * 10000,
+    message = tolower(message)
+  )%>%
+  select(
+    id,
+    time_id,
+    location,
+    account,
+    message
+  )%>%
+  #Elimino los retweet
+  filter(!startsWith(message, "re:"))%>%
+  #Elimino las cuentas en blacklist
+  anti_join(blacklist, by=c("account"="account")) %>%
+  #Elimino los barrios en blacklist
+  anti_join(blacklist_geo, by=c("location"="neighborhood"))
+```
+
+```{r}
+
+##Geramos el listado de palabras sin stopwords
+tweet <- tibble(id=datos$id,text = datos$message)
+
+tweet_tibble <- tweet %>%
+  unnest_tokens(word, text)
+
+#Generamos agrupaciones dobles de palabras
+bigramas <- tweet %>% 
+  unnest_tokens(input = text, output = "word",
+                token = "ngrams",n = 2, drop = TRUE)
+
+#quitamos stopwords
+data(stop_words)
+
+tweet_tibble <- tweet_tibble %>%
+  anti_join(stop_words)
+
+#Unimos palabras simples y palabras dobles
+dobletweet <- rbind(tweet_tibble,bigramas)
+
+#Escribo el archivo con las palabras de los tweets
+tidy_tweets <- dobletweet %>%
+  count(word, sort = TRUE) 
+
+write.table(tidy_tweets1 , file = paste0(data_dir, "tidytweets.csv"))
+
+```
+
+```{r}
+#Generamos un dataframe con la valoracion
+valoracion <-
+dobletweet %>%
+  left_join(servicios%>%filter(service=="water")%>%rename(water=service), by=c("word"="word"))%>%
+  left_join(servicios%>%filter(service=="roadways")%>%rename(roadways=service), by=c("word"="word"))%>%
+  left_join(servicios%>%filter(service=="gas")%>%rename(gas=service), by=c("word"="word"))%>%
+  left_join(servicios%>%filter(service=="power")%>%rename(power=service), by=c("word"="word"))%>%
+  left_join(servicios%>%filter(service=="healthcare")%>%rename(healthcare=service), by=c("word"="word"))%>%
+  mutate(
+    water = ifelse(is.na(water), 0, 1),
+    roadways = ifelse(is.na(roadways), 0, 1),
+    gas = ifelse(is.na(gas), 0, 1),
+    power = ifelse(is.na(power), 0, 1),
+    healthcare = ifelse(is.na(healthcare), 0, 1)
+  )%>%
+  group_by(id)%>%
+  summarise(
+    water = sum(water),
+    roadways = sum(roadways),
+    gas = sum(gas),
+    power = sum(power),
+    healthcare = sum(healthcare)
+  )%>%
+  mutate(
+    total = water + roadways + gas + power + healthcare
+  )%>%
+  arrange(desc(total))
+
+#Valoracion de Problemas
+
+val_problemas <-
+  dobletweet %>%
+  left_join(servicios%>%filter(problem=="incendio")%>%rename(incendio=problem), by=c("word"="word"))%>%
+  left_join(servicios%>%filter(problem=="heridos")%>%rename(heridos=problem), by=c("word"="word"))%>%
+  left_join(servicios%>%filter(problem=="muertos")%>%rename(muertos=problem), by=c("word"="word"))%>%
+  left_join(servicios%>%filter(problem=="radiacion")%>%rename(radiacion=problem), by=c("word"="word"))%>%
+  left_join(servicios%>%filter(problem=="electricidad")%>%rename(electricidad=problem), by=c("word"="word"))%>%
+  left_join(servicios%>%filter(problem=="camino_bloqueado")%>%rename(camino_bloqueado=problem), by=c("word"="word"))%>%
+  left_join(servicios%>%filter(problem=="derrumbes")%>%rename(derrumbes=problem), by=c("word"="word"))%>%
+  left_join(servicios%>%filter(problem=="agua_contaminada")%>%rename(agua_contaminada=problem), by=c("word"="word"))%>%
+  left_join(servicios%>%filter(problem=="inundacion")%>%rename(inundacion=problem), by=c("word"="word"))%>%
+  mutate(
+    incendio = ifelse(is.na(incendio), 0, 1),
+    heridos = ifelse(is.na(heridos), 0, 1),
+    muertos = ifelse(is.na(muertos), 0, 1),
+    radiacion = ifelse(is.na(radiacion), 0, 1),
+    electricidad = ifelse(is.na(electricidad), 0, 1),
+    camino_bloqueado = ifelse(is.na(camino_bloqueado), 0, 1),
+    derrumbes = ifelse(is.na(derrumbes), 0, 1),
+    agua_contaminada = ifelse(is.na(agua_contaminada), 0, 1),
+    inundacion = ifelse(is.na(inundacion), 0, 1)
+    
+  )%>%
+  group_by(id)%>%
+  summarise(
+    incendio = sum(incendio),
+    heridos = sum(heridos),
+    muertos = sum(muertos),
+    radiacion = sum(radiacion),
+    electricidad = sum(electricidad),
+    camino_bloqueado = sum(camino_bloqueado),
+    derrumbes = sum(derrumbes),
+    agua_contaminada = sum(agua_contaminada),
+    inundacion = sum(inundacion)
+  )%>%
+  mutate(
+    total = incendio + heridos + muertos + radiacion + electricidad + camino_bloqueado + derrumbes + agua_contaminada + inundacion
+  )%>%
+  arrange(desc(total))
+
+
+```
+
+
+```{r}
+#jutamos los mensajes originales con la valoracion
+valorated_tweets <- datos %>%
+  inner_join(valoracion) %>%
+  arrange(desc(total))
+
+#jutamos los mensajes originales con la valoracion de los problemas
+valorated_problem_tweets <- datos %>%
+  inner_join(val_problemas) %>%
+  arrange(desc(total))
+
+#Escribo un archivo con los tweets valorados
+write.table(valorated_tweets1 , file = paste0(data_dir, "valoratedtweets.csv"), row.names = FALSE)
+
+#Escribo un archivo con los tweets valorados con los problemas
+write.table(valorated_problem_tweets1 , file = paste0(data_dir, "valorated_problem_tweets.csv"), row.names = FALSE)
+
+
+
+```
+
+
+```{r}
+#Agrupo la valoracion de los tweets por tiempo y barrio
+grouped_tweets <- valorated_tweets %>%
+  group_by(time_id, location)%>%
+  summarise(
+   total = sum(total),
+   water = sum(water),
+   roadways = sum(roadways),
+   gas = sum(gas),
+   power = sum(power),
+   healthcare = sum (healthcare)
+  )%>%
+  arrange(
+    location, time_id
+  )
+
+#Agrupo la valoracion de problemas tweets por tiempo y barrio
+grouped_tweets_problem <- valorated_problem_tweets %>%
+  group_by(time_id, location)%>%
+  summarise(
+    total = sum(total),
+    incendio = sum(incendio),
+    heridos = sum(heridos),
+    muertos = sum(muertos),
+    radiacion = sum(radiacion),
+    electricidad = sum(electricidad),
+    camino_bloqueado = sum(camino_bloqueado),
+    derrumbes = sum(derrumbes),
+    agua_contaminada = sum(agua_contaminada),
+    inundacion = sum(inundacion)
+  )%>%
+  arrange(
+    location, time_id
+  )
+
+```
+
+
+
+```{r}
+#creo un dataframe de tiempo / geo
+loc <- valorated_tweets %>%
+  distinct(location)
+geo <- c(t(loc))
+
+time <- 
+  expand.grid(
+  #dias
+  seq(6,10,1), 
+  #horas
+  seq (0,23,1), 
+  #minutos
+  seq (0,59, 1),
+  geo) %>%
+  as.data.frame()
+
+colnames(time) <- c('dia', 'hora', 'minuto', 'location')
+
+time <- time %>%
+  mutate(
+    id = minuto + hora * 100 + dia * 10000
+  )%>%
+  select(
+    id, dia, hora, minuto, location
+  )%>%
+  arrange(location, id)
+
+```
+
+```{r}
+#Realizo un join entre el conjunto de todos los datos y el de los tweets valorados
+time$location<-as.character(time$location)
+time %>%
+  left_join(grouped_tweets, by=c("id"="time_id", "location"="location"))%>%
+  mutate(
+    total = ifelse(is.na(total), 0, total),
+    water = ifelse(is.na(water), 0, water),
+    roadways = ifelse(is.na(roadways), 0, roadways),
+    gas = ifelse(is.na(gas), 0, gas),
+    power = ifelse(is.na(power), 0, power),
+    healthcare = ifelse(is.na(healthcare), 0, healthcare)
+  )%>%
+  write.table(file = paste0(data_dir, "tweet-servicio-valoracion1.csv"), row.names = FALSE)
+
+
+time %>%
+  left_join(grouped_tweets_problem, by=c("id"="time_id", "location"="location"))%>%
+  mutate(
+    total = ifelse(is.na(total), 0, total),
+    incendio = ifelse(is.na(incendio), 0, incendio),
+    heridos = ifelse(is.na(heridos), 0, heridos),
+    muertos = ifelse(is.na(muertos), 0, muertos),
+    radiacion = ifelse(is.na(radiacion), 0, radiacion),
+    electricidad = ifelse(is.na(electricidad), 0, electricidad),
+    camino_bloqueado = ifelse(is.na(camino_bloqueado), 0, camino_bloqueado),
+    derrumbes = ifelse(is.na(derrumbes), 0, derrumbes),
+    agua_contaminada = ifelse(is.na(agua_contaminada), 0, agua_contaminada),
+    inundacion = ifelse(is.na(inundacion), 0, inundacion)
+  )%>%
+  write.table(file = paste0(data_dir, "tweet-problema-valoracion.csv"), row.names = FALSE)
+
+
+```
+
