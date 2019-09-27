@@ -1,0 +1,59 @@
+word,problem,service
+smell gas,incendio,gas
+gas odor,incendio,gas
+smoke,incendio,gas
+fires,incendio,gas
+firefighters,incendio,gas
+injured,heridos,healthcare
+injuries,heridos,healthcare
+patients,heridos,healthcare
+medics,heridos,healthcare
+doctor,heridos,healthcare
+bleeding,heridos,healthcare
+victims,heridos,healthcare
+hospital,heridos,healthcare
+ambulance,heridos,healthcare
+fatalities,muertos,healthcare
+radiation leak,radiacion,healthcare
+generator failed,electricidad,power
+leastpower,electricidad,power
+power line,electricidad,power
+power lines,electricidad,power
+outage,electricidad,power
+powerout,electricidad,power
+wires,electricidad,power
+routes,camino_bloqueado,roadways
+alternate road,camino_bloqueado,roadways
+alternate roads,camino_bloqueado,roadways
+bridgeclosed,camino_bloqueado,roadways
+crumbling,camino_bloqueado,roadways
+roadcrumble,camino_bloqueado,roadways
+cracked,camino_bloqueado,roadways
+schismsholes,camino_bloqueado,roadways
+holes,camino_bloqueado,roadways
+hole,camino_bloqueado,roadways
+broken,camino_bloqueado,roadways
+integrityfailure,derrumbes,roadways
+integrity failure,derrumbes,roadways
+collapsed,derrumbes,roadways
+trapped ,derrumbes,roadways
+buried,derrumbes,roadways
+trees,Escombros,roadways
+rubble ,Escombros,roadways
+watercontaminated,agua_contaminada,water
+contaminated ,agua_contaminada,water
+no water,agua_contaminada,water
+filter,agua_contaminada,water
+water unsafe,agua_contaminada,water
+potable water,agua_contaminada,water
+deep water,inundacion,water
+in water,inundacion,water
+intowater,inundacion,water
+flooding,inundacion,water
+flooded,inundacion,water
+flood,inundacion,water
+broken watermain,inundacion,water
+waterstreet,inundacion,water
+water street,inundacion,water
+waterhigh,inundacion,water
+water high,inundacion,water
