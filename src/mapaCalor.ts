@@ -1,10 +1,9 @@
 import * as d3 from "d3";
 
-const heatmap_data = require("../data//heatmap_data.csv");
+const heatmap_data = require("../data/heatmap_data.csv");
 
 export interface MapaCalorOpciones {
   padreSelector: string; //elemento contenedor del mapa
-  data: number[][];
   labelscol: string[];
   labelsrow: string[];
   start_color: string;
@@ -15,7 +14,6 @@ export function MapaCalor(options: MapaCalorOpciones) {
   var margin = { top: 50, right: 50, bottom: 150, left: 150 },
     width = 400,
     height = 400,
-    data = options.data,
     container = options.padreSelector,
     labelscolData = options.labelscol,
     labelsrowData = options.labelsrow,
@@ -24,31 +22,6 @@ export function MapaCalor(options: MapaCalorOpciones) {
 
   var widthLegend = 100;
 
-  if (!data) {
-    throw new Error("Please pass data");
-  }
-
-  // console.log(data);
-
-  if (!Array.isArray(data) || !data.length || !Array.isArray(data[0])) {
-    throw new Error("It should be a 2-D array");
-  }
-
-  var maxValue = d3.max(data, function(layer) {
-    return d3.max(layer, function(d) {
-      return d;
-    });
-  });
-  var minValue = d3.min(data, function(layer) {
-    return d3.min(layer, function(d) {
-      return d;
-    });
-  });
-
-  var numrows = data.length;
-  var numcols = data[0].length;
-
-  // console.log(maxValue, minValue, numcols, numrows);
 
   var svg = d3
     .select(container)
@@ -68,68 +41,14 @@ export function MapaCalor(options: MapaCalorOpciones) {
   // console.log(d3.range(numcols));
 
   var x = d3.scaleBand<number>()
-    .domain(d3.range(numcols))
+    .domain(d3.range(labelscolData.length))
     .range([0, width]);
 
   var y = d3.scaleBand<number>()
-    .domain(d3.range(numrows))
+    .domain(d3.range(labelsrowData.length))
     .range([0, height]);
-
-  var colorMap = d3.scaleLinear<string>()
-    .domain([minValue, maxValue])
-    .range([startColor, endColor]);
-
-  var row = svg
-    .selectAll(".row")
-    .data(data)
-    .enter()
-    .append("g")
-    .attr("class", "row")
-    .attr("transform", function(d, i) {
-      return "translate(0," + y(i) + ")";
-    })
-    .on("mouseover", handleMouseOver)
-    .on("mouseout", handleMouseOut);
-
-  var cell = row
-    .selectAll(".cell")
-    .data(function(d) {
-      return d;
-    })
-    .enter()
-    .append("g")
-    .attr("class", "cell")
-    .attr("transform", function(d, i) {
-      return "translate(" + x(i) + ", 0)";
-    });
-
-  cell
-    .append("rect")
-    .attr("width", x.bandwidth())
-    .attr("height", y.bandwidth())
-    .style("stroke-width", 0);
-
-  cell
-    .append("text")
-    .attr("dy", ".32em")
-    .attr("x", x.bandwidth() / 2)
-    .attr("y", y.bandwidth() / 2)
-    .attr("text-anchor", "middle")
-    .style("fill", function(d, i) {
-      return d >= maxValue / 2 ? "white" : "black";
-    })
-    .text(function(d, i) {
-      return d;
-    });
-
-  row
-    .selectAll(".cell")
-    .data(function(d, i) {
-      return data[i];
-    })
-    .style("fill", colorMap);
-
-  var labels = svg.append("g").attr("class", "labels");
+  
+    var labels = svg.append("g").attr("class", "labels");
 
   var columnLabels = labels
     .selectAll(".column-label")
@@ -227,6 +146,83 @@ export function MapaCalor(options: MapaCalorOpciones) {
     .attr("height", height)
     .style("fill", "url(#gradient)")
     .attr("transform", "translate(0," + margin.top + ")");
+    
+  let actualidarDatos = function(data: number[][]) {
+    
+    if (!Array.isArray(data) || !data.length || !Array.isArray(data[0])) {
+      throw new Error("It should be a 2-D array");
+    }
+  
+    var maxValue = d3.max(data, function(layer) {
+      return d3.max(layer, function(d) {
+        return d;
+      });
+    });
+    var minValue = d3.min(data, function(layer) {
+      return d3.min(layer, function(d) {
+        return d;
+      });
+    });
+  
+
+  var colorMap = d3.scaleLinear<string>()
+    .domain([minValue, maxValue])
+    .range([startColor, endColor]);
+
+  
+  var row = svg
+    .selectAll(".row")
+    .data(data)
+
+  row.enter()
+    .append("g")
+    .attr("class", "row")
+    .attr("transform", function(d, i) {
+      return "translate(0," + y(i) + ")";
+    })
+    .on("mouseover", handleMouseOver)
+    .on("mouseout", handleMouseOut);
+
+  var cell = row
+    .selectAll(".cell")
+    .data(function(d) {
+      return d;
+    })
+
+   cell.enter()
+    .append("g")
+    .attr("class", "cell")
+    .attr("transform", function(d, i) {
+      return "translate(" + x(i) + ", 0)";
+    });
+
+  cell
+    .append("rect")
+    .attr("width", x.bandwidth())
+    .attr("height", y.bandwidth())
+    .style("stroke-width", 0);
+
+  cell
+    .append("text")
+    .attr("dy", ".32em")
+    .attr("x", x.bandwidth() / 2)
+    .attr("y", y.bandwidth() / 2)
+    .attr("text-anchor", "middle")
+    .style("fill", function(d, i) {
+      return d >= maxValue / 2 ? "white" : "black";
+    })
+    .text(function(d, i) {
+      return d;
+    });
+
+  row
+    .selectAll(".cell")
+    .data(function(d, i) {
+      return data[i];
+    })
+    .style("fill", colorMap);
+
+
 
   var yScale = d3.scaleLinear()
     .range([height, 0])
@@ -263,4 +259,7 @@ export function MapaCalor(options: MapaCalorOpciones) {
     .attr("fill", "black");
   }
 
+  }
+
+  return actualidarDatos;
 }

@@ -8,20 +8,25 @@ export interface SelectorTiempoOpciones {
 
 interface Dato {
   timestamp: Date;
-  cantidadMsgProblemas: number;
+  total: number;
 }
 
-const inicio = moment("2020-04-06 00:00:00");
-const datos: Dato[] = Array.apply(null, { length: 5 * 24 }) // 5 dias X 24 hs
-  .map((_v, i) => ({
-    timestamp: inicio.add(moment.duration(1, "hour")).toDate(),
-    cantidadMsgProblemas: (100 * i) / (5 * 25)
-  }));
 
-export function SelectorTiempo(opciones: SelectorTiempoOpciones) {
-  const margin = 10;
-  const width = 1000 - 2 * margin;
-  const height = 140 - 2 * margin;
+
+export function SelectorTiempo(opciones: SelectorTiempoOpciones, datos: Dato[], onCambioSeleccion?: (t1: Date, t2: Date) => void) {
+
+  var coeff = 1000 * 60 * 30; //acumulado cada 30 minutos
+  var datosAcumuladosPorTiempo = d3.nest<Dato, {total: Number}>()
+  .key(d => new Date(Math.round(d.timestamp.getTime() / coeff) * coeff).toString())
+  .rollup(a => ({
+      total: d3.sum(a, d =>d.total )
+    }))
+  .entries(datos)
+  .map(d => Object.assign({}, d, {timestamp: new Date(d.key)}));
+
+  const margin = {top: 10, right: 10, bottom: 10, left: 60};
+  const width = 1400 - ( margin.left + margin.right);
+  const height = 140 - ( margin.top + margin.bottom);
 
   const svg = d3
     .select(opciones.padreSelector)
@@ -32,11 +37,11 @@ export function SelectorTiempo(opciones: SelectorTiempoOpciones) {
   const yScale = d3
     .scaleLinear()
     .range([height, 0])
-    .domain([0, 100]);
+    .domain([0, 50]);
 
   const chart = svg
     .append("g")
-    .attr("transform", `translate(${30 + margin}, ${0})`);
+    .attr("transform", `translate(${margin.left}, ${0})`);
 
   const xScale = d3
     .scaleTime()
@@ -53,22 +58,22 @@ export function SelectorTiempo(opciones: SelectorTiempoOpciones) {
 
   let barras = chart
     .selectAll()
-    .data(datos)
+    .data(datosAcumuladosPorTiempo)
     .enter()
     .append("rect")
     .attr("x", dato => xScale(dato.timestamp))
-    .attr("y", dato => yScale(dato.cantidadMsgProblemas))
-    .attr("height", s => height - yScale(s.cantidadMsgProblemas))
-    .attr("width", 8)
+    .attr("y", dato => yScale(dato.value.total))
+    .attr("height", s => height - yScale(s.value.total))
+    .attr("width", 5)
     .style("fill", "steelblue")
     .style("stroke", "black")
-    .style("stoke-width", 2);
+    .style("stoke-width", 1);
 
 
   // brush para seleccion de datos
   let arc = d3.arc()
   .innerRadius(0)
-  .outerRadius((height - margin) / 2)
+  .outerRadius((height - (margin.top)) / 2)
   .startAngle(0)
   .endAngle((d, i) => i ? Math.PI : -Math.PI)
 
@@ -85,26 +90,28 @@ export function SelectorTiempo(opciones: SelectorTiempoOpciones) {
           .attr("cursor", "ew-resize")
           .attr("d", arc)
     )
-      .attr("display", selection === null ? "none" : null)
-      .attr("transform", selection === null ? null : (d, i) => `translate(${selection[i]},${(height + margin - margin) / 2})`)
+    .attr("display", selection === null ? "none" : null)
+    .attr("transform", selection === null ? null : (d, i) => `translate(${selection[i]},${(height+margin.bottom)/2})`)
 
   function brushed() {
     const selection = d3.event.selection;
     if (selection === null) {
-      barras.attr("stroke", null);
+      barras.style("stroke", 'black');
+      onCambioSeleccion && onCambioSeleccion(null, null);
     } else {
       const sx = selection.map(xScale.invert);
-      barras.attr("stroke", d => (sx[0] <= d && d <= sx[1] ? "red" : null));
+      barras.style("stroke", d => sx[0] <= d.timestamp && d.timestamp <= sx[1] ? 'red' : 'black');
+      onCambioSeleccion && onCambioSeleccion(sx[0], sx[1]);
     }
     d3.select(this).call(brushHandle, selection);
   }
 
   const brush = d3
     .brushX()
-    .extent([[margin, margin], [width - margin, height - margin]])
+    .extent([[margin.left, margin.right], [width - (margin.left+margin.right), height - (margin.top+margin.bottom)]])
     .on("start brush end", brushed);
 
-  svg
+  chart
     .append("g")
     .call(brush)
     .call(brush.move, [0.3, 0.5].map(xScale));

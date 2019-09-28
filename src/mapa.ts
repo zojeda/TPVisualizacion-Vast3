@@ -7,7 +7,6 @@ export interface MapaOpciones {
 }
 
 function crearMapa(json: any, svg: d3.Selection<SVGSVGElement, unknown, HTMLElement, any>) {
-    console.log(json)
 
     // la proyeccion se calcula así: https://www.d3indepth.com/geographic/#projection-functions
     var projection = d3.geoMercator()
