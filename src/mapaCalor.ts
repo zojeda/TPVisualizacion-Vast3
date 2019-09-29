@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import { Mapa } from "./mapa";
 
 const heatmap_data = require("../data/heatmap_data.csv");
 
@@ -8,6 +9,10 @@ export interface MapaCalorOpciones {
   labelsrow: string[];
   start_color: string;
   end_color: string;
+  minValue: number;
+  maxValue: number;
+  callback_Mapa: (servicio: string) => void;
+  callback_Barrio: (barrio: string) => void;
 }
 
 export function MapaCalor(options: MapaCalorOpciones) {
@@ -18,7 +23,9 @@ export function MapaCalor(options: MapaCalorOpciones) {
     labelscolData = options.labelscol,
     labelsrowData = options.labelsrow,
     startColor = options.start_color,
-    endColor = options.end_color;
+    endColor = options.end_color,
+    minValue = options.minValue,
+    maxValue = options.maxValue;
 
   var widthLegend = 100;
 
@@ -76,6 +83,7 @@ export function MapaCalor(options: MapaCalorOpciones) {
     .attr("dy", ".82em")
     .attr("text-anchor", "end")
     .attr("transform", "rotate(-60)")
+    .attr("id", function(d, i) { return labelscolData[i].replace(/\s/g,'-'); })
     .text(function(d, i) {
       return d;
     });
@@ -153,6 +161,9 @@ export function MapaCalor(options: MapaCalorOpciones) {
       throw new Error("It should be a 2-D array");
     }
   
+    /* 
+    //Este era el calculo original de los maximos y minimos del color. 
+    // Se paso para afuera para que no cambie el maximo con el filtro.
     var maxValue = d3.max(data, function(layer) {
       return d3.max(layer, function(d) {
         return d;
@@ -163,7 +174,9 @@ export function MapaCalor(options: MapaCalorOpciones) {
         return d;
       });
     });
-  
+   */
+  //const maxValue = 134;
+  //const minValue =   0;
 
   var colorMap = d3.scaleLinear<string>()
     .domain([minValue, maxValue])
@@ -180,8 +193,8 @@ export function MapaCalor(options: MapaCalorOpciones) {
     .attr("transform", function(d, i) {
       return "translate(0," + y(i) + ")";
     })
-    .on("mouseover", handleMouseOver)
-    .on("mouseout", handleMouseOut);
+    .on("mouseover", handleMouseOverRow)
+    .on("mouseout", handleMouseOutRow);
 
   var cell = row
     .selectAll(".cell")
@@ -194,7 +207,9 @@ export function MapaCalor(options: MapaCalorOpciones) {
     .attr("class", "cell")
     .attr("transform", function(d, i) {
       return "translate(" + x(i) + ", 0)";
-    });
+    })
+    .on("mouseover", handleMouseOverCol)
+    .on("mouseout", handleMouseOutCol);
 
   cell
     .append("rect")
@@ -236,25 +251,42 @@ export function MapaCalor(options: MapaCalorOpciones) {
     .attr("transform", "translate(41," + margin.top + ")")
     .call(yAxis);
 
-  // Eventos por Mouse
-  function handleMouseOver(d, i) {  
+  // Eventos por Mouse por Fila
+  function handleMouseOverRow(d, i) {  
     //console.log("Mouse Over", d[i], labelsrowData[i], i);
-
     // Armo un string con el id de cada componente de texto
     var selectText = '#'; 
     var selectText = selectText.concat(labelsrowData[i]).replace(/\s/g,'-'); 
     //console.log(selectText);
-
     rowLabels.select(selectText).transition().duration(200)
     .attr("font-size", "21px")
     .attr("fill", "red");
+    options.callback_Barrio(labelsrowData[i].replace(/\s/g,'-'));
     //console.log("Mouse Over Fin");
     }
 
-  function handleMouseOut(d, i) {  
+  function handleMouseOutRow(d, i) {  
     //console.log("Mouse Out", d[i]);
     rowLabels.selectAll("text")
     .data(labelsrowData).transition().duration(200)
+    .attr("font-size", "16px")
+    .attr("fill", "black");
+    options.callback_Barrio("");
+  }
+
+  // Eventos por Mouse por Columna
+  function handleMouseOverCol(d, i) {  
+    var selectText = '#'; 
+    var selectText = selectText.concat(labelscolData[i]).replace(/\s/g,'-'); 
+    columnLabels.select(selectText).transition().duration(200)
+    .attr("font-size", "21px")
+    .attr("fill", "red");
+    options.callback_Mapa(labelscolData[i]);
+    }
+  
+  function handleMouseOutCol(d, i) {  
+    columnLabels.selectAll("text")
+    .data(labelscolData).transition().duration(200)
     .attr("font-size", "16px")
     .attr("fill", "black");
   }

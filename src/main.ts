@@ -1,9 +1,9 @@
 import "./main.css";
 import { MapaCalor } from "./mapaCalor";
-import { Mapa } from "./mapa";
+import { Mapa, MapaEdit, ColorBarrio } from "./mapa";
 import { SelectorTiempo } from "./timeSelector";
 import * as d3 from 'd3';
-import { preprocesar, totalizarPorBarrio, convertirAMatriz} from './datos';
+import { preprocesar, totalizarPorBarrio, convertirAMatriz, calcularMaxMin} from './datos';
 
 const rutaTados = require("../pruebas/datos/data/tweet-servicio-valoracion2.csv");
 
@@ -18,13 +18,19 @@ d3.csv(rutaTados, preprocesar)
 		let datosFiltrados =  datos;
 		let datosPorBarrio = totalizarPorBarrio(datosFiltrados);
 		let datosPorBarrioMatriz = convertirAMatriz(datosPorBarrio);
+		let maxMinValue = calcularMaxMin(datosPorBarrioMatriz.datos);
+
 		
 		let actualizarDatosMapaCalor = MapaCalor({
 		  padreSelector: ".mapaCalor",
 		  labelscol: datosPorBarrioMatriz.servicios,
 		  labelsrow: datosPorBarrioMatriz.barrios,
 		  start_color: "#98df8a",
-		  end_color: 'red'
+		  end_color: 'red',
+		  minValue: maxMinValue.minValue,
+		  maxValue: maxMinValue.maxValue,
+		  callback_Mapa: MapaEdit,
+		  callback_Barrio: ColorBarrio
 		});
 
 

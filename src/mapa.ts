@@ -1,4 +1,5 @@
 import * as d3 from 'd3';
+import { json } from 'd3';
 
 const StHimark = require('../data/StHimark.geojson');
 
@@ -23,6 +24,7 @@ function crearMapa(json: any, svg: d3.Selection<SVGSVGElement, unknown, HTMLElem
             .attr('d', geoGenerator)
             .attr('fill', 'white')
             .attr('stroke', 'black')
+            .attr("id", function(d, i) { return json.features[i].properties.Nbrhood.replace(/\s/g,'-'); })
             .on("mouseover", function() {
                 d3.select(this)
                     .attr("fill", "red");
@@ -31,6 +33,8 @@ function crearMapa(json: any, svg: d3.Selection<SVGSVGElement, unknown, HTMLElem
                 d3.select(this)
                     .attr("fill", 'white');
             });
+    
+    //console.log(json.features[0].properties.Nbrhood);
     
 }
 export function Mapa(opciones: MapaOpciones) {
@@ -44,3 +48,24 @@ export function Mapa(opciones: MapaOpciones) {
         crearMapa(json, svg);
     })
 }
+
+export function ColorBarrio(barrio: string){
+    //console.log("Test ColorBarrio", barrio);
+    //saco todos los colores
+    var barriosTodos = d3.selectAll('path').transition().duration(200)
+    .attr("fill", "white");
+
+    //pinto el barrio seleccionado
+    if(barrio !== ""){
+        var selectBarrio = '#'; 
+        var selectBarrio = selectBarrio.concat(barrio); 
+        var unBarrio = d3.select(selectBarrio).transition().duration(200)
+        .attr("fill", "red");
+    }
+}
+
+export function MapaEdit(servicio: string){
+    console.log("Test MapaEdit", servicio);
+
+}
+

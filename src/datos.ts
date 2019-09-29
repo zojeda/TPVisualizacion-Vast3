@@ -78,4 +78,19 @@ export function convertirAMatriz(datos): {barrios: string[], servicios: string[]
 }
 
 
-
+export function calcularMaxMin(datos: number[][]){
+    var maxValue = d3.max(datos, function(layer) {
+        return d3.max(layer, function(d) {
+          return d;
+        });
+      });
+      var minValue = d3.min(datos, function(layer) {
+        return d3.min(layer, function(d) {
+          return d;
+        });
+      });
+    return {
+        maxValue,
+        minValue
+    };
+}
