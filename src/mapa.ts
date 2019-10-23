@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import { json } from 'd3';
+import { json, geoCentroid } from 'd3';
 
 const StHimark = require('../data/StHimark.geojson');
 
@@ -34,8 +34,16 @@ function crearMapa(json: any, svg: d3.Selection<SVGSVGElement, unknown, HTMLElem
                     .attr("fill", 'white');
             });
     
-    //console.log(json.features[0].properties.Nbrhood);
-    
+    // Agrega los nombres de cada barrio al mapa.
+    // Lo ubica en el centro desplazado a la izquierda según el largo del string.
+    var label = svg.selectAll("text")
+            .data(json.features)
+            .enter()
+            .append("text")
+            .attr("class", "label")
+            .attr("transform", function(d,i) { return "translate(" + [geoGenerator.centroid(json.features[i])[0]-(json.features[0].properties.Nbrhood.length/2*6),geoGenerator.centroid(json.features[i])[1]] + ")"; })
+            .text(function(d,i) { return json.features[i].properties.Nbrhood;} );
+
 }
 export function Mapa(opciones: MapaOpciones) {
     const contenedor = d3.select(opciones.padreSelector);
@@ -64,8 +72,20 @@ export function ColorBarrio(barrio: string){
     }
 }
 
-export function MapaEdit(servicio: string){
+export function MapaEdit(servicio: string, datos: number[], labels: string[]){
     console.log("Test MapaEdit", servicio);
-
+    console.log(datos);
+    console.log(labels);
+    var maxValue = Math.max.apply(null, datos);
+    var minValue = Math.min.apply(null, datos);
+    var i = 0;
+    labels.forEach(function (barrio) {
+        barrio = barrio.replace(/\s/g,'-');
+        var selectBarrio = '#'; 
+        var selectBarrio = selectBarrio.concat(barrio); 
+        var unBarrio = d3.select(selectBarrio).transition().duration(200)
+        .attr("fill", "rgb(0, 78, 255,"+(datos[i]/maxValue)+")");
+        i++;
+    })
 }
 

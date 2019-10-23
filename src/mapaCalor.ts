@@ -11,7 +11,7 @@ export interface MapaCalorOpciones {
   end_color: string;
   minValue: number;
   maxValue: number;
-  callback_Mapa: (servicio: string) => void;
+  callback_Mapa: (servicio: string, datos: number[], label: string[]) => void;
   callback_Barrio: (barrio: string) => void;
 }
 
@@ -57,7 +57,12 @@ export function MapaCalor(options: MapaCalorOpciones) {
   
     var labels = svg.append("g").attr("class", "labels");
 
-  var columnLabels = labels
+
+
+  let actualidarDatos = function(data: number[][]) {
+    
+
+    var columnLabels = labels
     .selectAll(".column-label")
     .data(labelscolData)
     .enter()
@@ -86,7 +91,9 @@ export function MapaCalor(options: MapaCalorOpciones) {
     .attr("id", function(d, i) { return labelscolData[i].replace(/\s/g,'-'); })
     .text(function(d, i) {
       return d;
-    });
+    })
+    .on("mouseover", handleMouseOverCLabel)
+    .on("mouseout", handleMouseOutCLabel);
 
   var rowLabels = labels
     .selectAll(".row-label")
@@ -118,7 +125,10 @@ export function MapaCalor(options: MapaCalorOpciones) {
       return d;
     })
     .attr("font-size", "16px")
-    .attr("fill", "black");
+    .attr("fill", "black")
+    .on("mouseover", handleMouseOverRLabel)
+    .on("mouseout", handleMouseOutRLabel);
+
 
   var key = d3
     .select("#legend")
@@ -154,9 +164,36 @@ export function MapaCalor(options: MapaCalorOpciones) {
     .attr("height", height)
     .style("fill", "url(#gradient)")
     .attr("transform", "translate(0," + margin.top + ")");
-    
-  let actualidarDatos = function(data: number[][]) {
-    
+
+    function handleMouseOverRLabel(d, i){
+      //alert(d);
+    }
+  
+    function handleMouseOutRLabel(d, i){
+      //alert('Out'+d);
+    }
+
+    function handleMouseOverCLabel(d, i){
+      //alert(d);
+      
+      columnLabels.selectAll("text")
+      .data(labelscolData).transition().duration(200)
+      .attr("font-size", "16px")
+      .attr("fill", "black");
+      
+      var selectText = '#'; 
+      var selectText = selectText.concat(labelscolData[i]).replace(/\s/g,'-'); 
+      columnLabels.select(selectText).transition().duration(200)
+      .attr("font-size", "21px")
+      .attr("fill", "rgb(0, 78, 255)");
+      options.callback_Mapa(d,data.map(x => x[i]),labelsrowData);
+    }
+  
+    function handleMouseOutCLabel(d, i){
+      //alert('Out'+d);
+    }
+
+
     if (!Array.isArray(data) || !data.length || !Array.isArray(data[0])) {
       throw new Error("It should be a 2-D array");
     }
@@ -253,6 +290,7 @@ export function MapaCalor(options: MapaCalorOpciones) {
 
   // Eventos por Mouse por Fila
   function handleMouseOverRow(d, i) {  
+    /*
     //console.log("Mouse Over", d[i], labelsrowData[i], i);
     // Armo un string con el id de cada componente de texto
     var selectText = '#'; 
@@ -263,35 +301,42 @@ export function MapaCalor(options: MapaCalorOpciones) {
     .attr("fill", "red");
     options.callback_Barrio(labelsrowData[i].replace(/\s/g,'-'));
     //console.log("Mouse Over Fin");
+    */
     }
 
   function handleMouseOutRow(d, i) {  
+    /*
     //console.log("Mouse Out", d[i]);
     rowLabels.selectAll("text")
     .data(labelsrowData).transition().duration(200)
     .attr("font-size", "16px")
     .attr("fill", "black");
     options.callback_Barrio("");
+    */
   }
 
   // Eventos por Mouse por Columna
   function handleMouseOverCol(d, i) {  
-    var selectText = '#'; 
+    /*var selectText = '#'; 
     var selectText = selectText.concat(labelscolData[i]).replace(/\s/g,'-'); 
     columnLabels.select(selectText).transition().duration(200)
     .attr("font-size", "21px")
     .attr("fill", "red");
-    options.callback_Mapa(labelscolData[i]);
+    //options.callback_Mapa(labelscolData[i]);
+    */
     }
   
   function handleMouseOutCol(d, i) {  
-    columnLabels.selectAll("text")
+    /*columnLabels.selectAll("text")
     .data(labelscolData).transition().duration(200)
     .attr("font-size", "16px")
     .attr("fill", "black");
+    */
   }
 
   }
+
+  
 
   return actualidarDatos;
 }
