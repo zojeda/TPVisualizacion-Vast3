@@ -55,14 +55,9 @@ export function MapaCalor(options: MapaCalorOpciones) {
     .domain(d3.range(labelsrowData.length))
     .range([0, height]);
   
-    var labels = svg.append("g").attr("class", "labels");
+  var labels = svg.append("g").attr("class", "labels");
 
-
-
-  let actualidarDatos = function(data: number[][]) {
-    
-
-    var columnLabels = labels
+  var columnLabels = labels
     .selectAll(".column-label")
     .data(labelscolData)
     .enter()
@@ -81,7 +76,7 @@ export function MapaCalor(options: MapaCalorOpciones) {
     .attr("y1", 0)
     .attr("y2", 5);
 
-  columnLabels
+  let textoColumnas = columnLabels
     .append("text")
     .attr("x", 0)
     .attr("y", y.bandwidth() / 2)
@@ -92,78 +87,82 @@ export function MapaCalor(options: MapaCalorOpciones) {
     .text(function(d, i) {
       return d;
     })
-    .on("mouseover", handleMouseOverCLabel)
-    .on("mouseout", handleMouseOutCLabel);
 
-  var rowLabels = labels
-    .selectAll(".row-label")
-    .data(labelsrowData)
-    .enter()
-    .append("g")
-    .attr("class", "row-label")
-    .attr("transform", function(d, i) {
-      return "translate(" + 0 + "," + y(i) + ")";
-    });
+  let actualidarDatos = function(data: number[][]) {
+    
+    textoColumnas
+      .on("mouseover", handleMouseOverCLabel)
+      .on("mouseout", handleMouseOutCLabel);
 
-  rowLabels
-    .append("line")
-    .style("stroke", "black")
-    .style("stroke-width", "1px")
-    .attr("x1", 0)
-    .attr("x2", -5)
-    .attr("y1", y.bandwidth() / 2)
-    .attr("y2", y.bandwidth() / 2);
+    var rowLabels = labels
+      .selectAll(".row-label")
+      .data(labelsrowData)
+      .enter()
+      .append("g")
+      .attr("class", "row-label")
+      .attr("transform", function(d, i) {
+        return "translate(" + 0 + "," + y(i) + ")";
+      });
 
-  rowLabels
-    .append("text")
-    .attr("x", -8)
-    .attr("y", y.bandwidth() / 2)
-    .attr("dy", ".32em")
-    .attr("text-anchor", "end")
-    .attr("id", function(d, i) { return labelsrowData[i].replace(/\s/g,'-'); })
-    .text(function(d, i) {
-      return d;
-    })
-    .attr("font-size", "16px")
-    .attr("fill", "black")
-    .on("mouseover", handleMouseOverRLabel)
-    .on("mouseout", handleMouseOutRLabel);
+    rowLabels
+      .append("line")
+      .style("stroke", "black")
+      .style("stroke-width", "1px")
+      .attr("x1", 0)
+      .attr("x2", -5)
+      .attr("y1", y.bandwidth() / 2)
+      .attr("y2", y.bandwidth() / 2);
+
+    rowLabels
+      .append("text")
+      .attr("x", -8)
+      .attr("y", y.bandwidth() / 2)
+      .attr("dy", ".32em")
+      .attr("text-anchor", "end")
+      .attr("id", function(d, i) { return labelsrowData[i].replace(/\s/g,'-'); })
+      .text(function(d, i) {
+        return d;
+      })
+      .attr("font-size", "16px")
+      .attr("fill", "black")
+      .on("mouseover", handleMouseOverRLabel)
+      .on("mouseout", handleMouseOutRLabel);
 
 
-  var key = d3
-    .select("#legend")
-    .append("svg")
-    .attr("width", widthLegend)
-    .attr("height", height + margin.top + margin.bottom);
+    var key = d3
+      .select("#legend")
+      .append("svg")
+      .attr("width", widthLegend)
+      .attr("height", height + margin.top + margin.bottom);
 
-  var legend = key
-    .append("defs")
-    .append("svg:linearGradient")
-    .attr("id", "gradient")
-    .attr("x1", "100%")
-    .attr("y1", "0%")
-    .attr("x2", "100%")
-    .attr("y2", "100%")
-    .attr("spreadMethod", "pad");
+    var legend = key
+      .append("defs")
+      .append("svg:linearGradient")
+      .attr("id", "gradient")
+      .attr("x1", "100%")
+      .attr("y1", "0%")
+      .attr("x2", "100%")
+      .attr("y2", "100%")
+      .attr("spreadMethod", "pad");
 
-  legend
-    .append("stop")
-    .attr("offset", "0%")
-    .attr("stop-color", endColor)
-    .attr("stop-opacity", 1);
+    legend
+      .append("stop")
+      .attr("offset", "0%")
+      .attr("stop-color", endColor)
+      .attr("stop-opacity", 1);
 
-  legend
-    .append("stop")
-    .attr("offset", "100%")
-    .attr("stop-color", startColor)
-    .attr("stop-opacity", 1);
+    legend
+      .append("stop")
+      .attr("offset", "100%")
+      .attr("stop-color", startColor)
+      .attr("stop-opacity", 1);
 
-  key
-    .append("rect")
-    .attr("width", widthLegend / 2 - 10)
-    .attr("height", height)
-    .style("fill", "url(#gradient)")
-    .attr("transform", "translate(0," + margin.top + ")");
+    key
+      .append("rect")
+      .attr("width", widthLegend / 2 - 10)
+      .attr("height", height)
+      .style("fill", "url(#gradient)")
+      .attr("transform", "translate(0," + margin.top + ")");
 
     function handleMouseOverRLabel(d, i){
       //alert(d);
