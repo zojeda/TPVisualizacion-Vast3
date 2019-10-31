@@ -154,6 +154,9 @@ export function MapaCalor(options: MapaCalorOpciones) {
       .style("fill", "url(#gradient)")
       .attr("transform", "translate(0," + margin.top + ")");
 
+  let servicioSeleccionado = null;
+  let indiceColumnaSeleccionada = null;
+
   let actualidarDatos = function(data: number[][]) {
     
     textoColumnas
@@ -164,6 +167,9 @@ export function MapaCalor(options: MapaCalorOpciones) {
       .on("mouseover", handleMouseOverRLabel)
       .on("mouseout", handleMouseOutRLabel);
 
+    if (servicioSeleccionado) {
+      options.callback_Mapa(servicioSeleccionado,data.map(x => x[indiceColumnaSeleccionada]),labelsrowData);
+    }
 
 
     function handleMouseOverRLabel(d, i){
@@ -187,6 +193,8 @@ export function MapaCalor(options: MapaCalorOpciones) {
       columnLabels.select(selectText).transition().duration(200)
       .attr("font-size", "21px")
       .attr("fill", "rgb(0, 78, 255)");
+      servicioSeleccionado = d;
+      indiceColumnaSeleccionada = i;
       options.callback_Mapa(d,data.map(x => x[i]),labelsrowData);
     }
   
