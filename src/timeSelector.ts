@@ -71,11 +71,12 @@ export function SelectorTiempo(opciones: SelectorTiempoOpciones, datos: Dato[], 
 
 
   // brush para seleccion de datos
-  let arc = d3.arc()
-  .innerRadius(0)
-  .outerRadius((height - (margin.top)) / 2)
-  .startAngle(0)
-  .endAngle((d, i) => i ? Math.PI : -Math.PI)
+  let brushResizePath = function(d) {
+    let e = +(d.type == "e"),
+        x = e ? 1 : -1,
+        y = height / 2;
+    return "M" + (.5 * x) + "," + y + "A6,6 0 0 " + e + " " + (6.5 * x) + "," + (y + 6) + "V" + (2 * y - 6) + "A6,6 0 0 " + e + " " + (.5 * x) + "," + (2 * y) + "Z" + "M" + (2.5 * x) + "," + (y + 8) + "V" + (2 * y - 8) + "M" + (4.5 * x) + "," + (y + 8) + "V" + (2 * y - 8);
+}
 
   let brushHandle = (g, selection) => g
     .selectAll(".handle--custom")
@@ -88,10 +89,10 @@ export function SelectorTiempo(opciones: SelectorTiempoOpciones, datos: Dato[], 
           .attr("stroke", "#000")
           .attr("stroke-width", 1.5)
           .attr("cursor", "ew-resize")
-          .attr("d", arc)
-    )
+          .attr("d", brushResizePath)
+          )
     .attr("display", selection === null ? "none" : null)
-    .attr("transform", selection === null ? null : (d, i) => `translate(${selection[i]},${(height+margin.bottom)/2})`)
+    .attr("transform", selection === null ? null : (d, i) => `translate(${selection[i]},${-margin.top-margin.bottom})`)
 
   function brushed() {
     const selection = d3.event.selection;
@@ -100,7 +101,7 @@ export function SelectorTiempo(opciones: SelectorTiempoOpciones, datos: Dato[], 
       onCambioSeleccion && onCambioSeleccion(null, null);
     } else {
       const sx = selection.map(xScale.invert);
-      barras.style("stroke", d => sx[0] <= d.timestamp && d.timestamp <= sx[1] ? 'red' : 'black');
+      // barras.style("stroke", d => sx[0] <= d.timestamp && d.timestamp <= sx[1] ? 'red' : 'black');
       onCambioSeleccion && onCambioSeleccion(sx[0], sx[1]);
     }
     d3.select(this).call(brushHandle, selection);
@@ -108,7 +109,7 @@ export function SelectorTiempo(opciones: SelectorTiempoOpciones, datos: Dato[], 
 
   const brush = d3
     .brushX()
-    .extent([[margin.left, margin.right], [width - (margin.left+margin.right), height - (margin.top+margin.bottom)]])
+    .extent([[margin.left, margin.right], [width - (margin.left+margin.right), height]])
     .on("start brush end", brushed);
 
   chart

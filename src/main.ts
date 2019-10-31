@@ -7,8 +7,8 @@ import { preprocesar, totalizarPorBarrio, convertirAMatriz, calcularMaxMin} from
 
 const rutaTados = require("../pruebas/datos/data/tweet-servicio-valoracion2.csv");
 
-
-d3.csv(rutaTados, preprocesar)
+document.addEventListener("DOMContentLoaded", function(event) { 
+	d3.csv(rutaTados, preprocesar)
 	.then( (datos)  => {
 		Mapa({
 		  padreSelector: ".mapa"
@@ -44,5 +44,6 @@ d3.csv(rutaTados, preprocesar)
 				actualizarDatosMapaCalor(datosPorBarrioMatriz.datos);
 			}
 		});
-} );
+	});
+});
 

@@ -16,9 +16,9 @@ export interface MapaCalorOpciones {
 }
 
 export function MapaCalor(options: MapaCalorOpciones) {
-  var margin = { top: 50, right: 50, bottom: 150, left: 150 },
-    width = 400,
-    height = 400,
+  var margin = { top: 5, right: 5, bottom: 100, left: 120 },
+    width = 350,
+    height = 350,
     container = options.padreSelector,
     labelscolData = options.labelscol,
     labelsrowData = options.labelsrow,
@@ -27,14 +27,14 @@ export function MapaCalor(options: MapaCalorOpciones) {
     minValue = options.minValue,
     maxValue = options.maxValue;
 
-  var widthLegend = 100;
+  var widthLegend = 130;
 
 
   var svg = d3
     .select(container)
     .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
+    .attr("width", "100%")
+    .attr("height", "100%")
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -87,13 +87,6 @@ export function MapaCalor(options: MapaCalorOpciones) {
     .text(function(d, i) {
       return d;
     })
-
-  let actualidarDatos = function(data: number[][]) {
-    
-    textoColumnas
-      .on("mouseover", handleMouseOverCLabel)
-      .on("mouseout", handleMouseOutCLabel);
-
     var rowLabels = labels
       .selectAll(".row-label")
       .data(labelsrowData)
@@ -113,7 +106,7 @@ export function MapaCalor(options: MapaCalorOpciones) {
       .attr("y1", y.bandwidth() / 2)
       .attr("y2", y.bandwidth() / 2);
 
-    rowLabels
+  let rowTexts = rowLabels
       .append("text")
       .attr("x", -8)
       .attr("y", y.bandwidth() / 2)
@@ -125,11 +118,8 @@ export function MapaCalor(options: MapaCalorOpciones) {
       })
       .attr("font-size", "16px")
       .attr("fill", "black")
-      .on("mouseover", handleMouseOverRLabel)
-      .on("mouseout", handleMouseOutRLabel);
 
-
-    var key = d3
+      var key = d3
       .select("#legend")
       .append("svg")
       .attr("width", widthLegend)
@@ -163,6 +153,18 @@ export function MapaCalor(options: MapaCalorOpciones) {
       .attr("height", height)
       .style("fill", "url(#gradient)")
       .attr("transform", "translate(0," + margin.top + ")");
+
+  let actualidarDatos = function(data: number[][]) {
+    
+    textoColumnas
+      .on("mouseover", handleMouseOverCLabel)
+      .on("mouseout", handleMouseOutCLabel);
+
+    rowTexts
+      .on("mouseover", handleMouseOverRLabel)
+      .on("mouseout", handleMouseOutRLabel);
+
+
 
     function handleMouseOverRLabel(d, i){
       //alert(d);
