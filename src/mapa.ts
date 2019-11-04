@@ -73,17 +73,13 @@ export function ColorBarrio(barrio: string){
 }
 
 export function MapaEdit(servicio: string, datos: number[], labels: string[]){
-    console.log("Test MapaEdit", servicio);
-    console.log(datos);
-    console.log(labels);
     var maxValue = Math.max.apply(null, datos);
-    var minValue = Math.min.apply(null, datos);
     var i = 0;
     labels.forEach(function (barrio) {
         barrio = barrio.replace(/\s/g,'-');
         var selectBarrio = '#'; 
         var selectBarrio = selectBarrio.concat(barrio); 
-        var unBarrio = d3.select(selectBarrio).transition().duration(200)
+        d3.select(selectBarrio).transition().duration(200)
         .attr("fill", "rgb(0, 78, 255,"+(datos[i]/maxValue)+")");
         i++;
     })

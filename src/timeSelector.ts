@@ -1,7 +1,8 @@
 import * as d3 from "d3";
-import * as moment from "moment";
-import * as crossfilter from "crossfilter2";
-import { crearSelector } from "./pruebaBarchartSelector";
+import moment from "moment";
+import 'daterangepicker';
+import 'daterangepicker/daterangepicker.css';
+
 export interface SelectorTiempoOpciones {
   padreSelector: string; //elemento contenedor del mapa
 }
@@ -11,7 +12,9 @@ interface Dato {
   total: number;
 }
 
-
+const DATE_TIME_FORMAT = 'DD/MM HH:mm'
+const inicioMoment = moment("2020-04-06 00:00:00");
+const finMoment = moment("2020-04-11 00:00:00");
 
 export function SelectorTiempo(opciones: SelectorTiempoOpciones, datos: Dato[], onCambioSeleccion?: (t1: Date, t2: Date) => void) {
 
@@ -27,6 +30,15 @@ export function SelectorTiempo(opciones: SelectorTiempoOpciones, datos: Dato[], 
   const margin = {top: 10, right: 10, bottom: 10, left: 60};
   const width = 1400 - ( margin.left + margin.right);
   const height = 140 - ( margin.top + margin.bottom);
+
+
+
+  let seleccionDesde: Date = inicioMoment.toDate();
+  let seleccionHasta: Date = finMoment.toDate();
+
+
+
+
 
   const svg = d3
     .select(opciones.padreSelector)
@@ -46,8 +58,8 @@ export function SelectorTiempo(opciones: SelectorTiempoOpciones, datos: Dato[], 
   const xScale = d3
     .scaleTime()
     .domain([
-      moment("2020-04-06 00:00:00").toDate(),
-      moment("2020-04-11 00:00:00").toDate()
+      inicioMoment.toDate(),
+      finMoment.toDate()
     ])
     .rangeRound([0, width]);
 
@@ -76,9 +88,14 @@ export function SelectorTiempo(opciones: SelectorTiempoOpciones, datos: Dato[], 
         x = e ? 1 : -1,
         y = height / 2;
     return "M" + (.5 * x) + "," + y + "A6,6 0 0 " + e + " " + (6.5 * x) + "," + (y + 6) + "V" + (2 * y - 6) + "A6,6 0 0 " + e + " " + (.5 * x) + "," + (2 * y) + "Z" + "M" + (2.5 * x) + "," + (y + 8) + "V" + (2 * y - 8) + "M" + (4.5 * x) + "," + (y + 8) + "V" + (2 * y - 8);
-}
+  }
 
-  let brushHandle = (g, selection) => g
+  
+  let brushHandle = function(g) {
+    let xDesde = xScale(seleccionDesde);
+    let xHasta = xScale(seleccionHasta);
+    let seleccion = [xDesde, xHasta];
+    let brushH = g
     .selectAll(".handle--custom")
     .data([{type: "w"}, {type: "e"}])
     .join(
@@ -91,34 +108,69 @@ export function SelectorTiempo(opciones: SelectorTiempoOpciones, datos: Dato[], 
           .attr("cursor", "ew-resize")
           .attr("d", brushResizePath)
           )
-    .attr("display", selection === null ? "none" : null)
-    .attr("transform", selection === null ? null : (d, i) => `translate(${selection[i]},${-margin.top-margin.bottom})`)
+    .attr("transform", (d, i) => `translate(${seleccion[i]},${-margin.top-margin.bottom})`)
+    return brushH;
+  }
 
   function brushed() {
     const selection = d3.event.selection;
     if (selection === null) {
-      barras.style("stroke", 'black');
-      onCambioSeleccion && onCambioSeleccion(null, null);
+      seleccionar(seleccionDesde, seleccionHasta);
     } else {
       const sx = selection.map(xScale.invert);
-      // barras.style("stroke", d => sx[0] <= d.timestamp && d.timestamp <= sx[1] ? 'red' : 'black');
-      onCambioSeleccion && onCambioSeleccion(sx[0], sx[1]);
+      seleccionar(sx[0], sx[1]);
     }
-    d3.select(this).call(brushHandle, selection);
+
+ 
+    d3.select(this).call(brushHandle);
   }
 
   const brush = d3
     .brushX()
-    .extent([[margin.left, margin.right], [width - (margin.left+margin.right), height]])
-    .on("start brush end", brushed);
+  
+  brush
+    .extent([[0, margin.top], [width - (margin.left+margin.right), height]])
+    .on("brush", brushed);
 
-  chart
+  const brushG = chart
     .append("g")
     .call(brush)
-    .call(brush.move, [0.3, 0.5].map(xScale));
+
+ 
+  function seleccionar(desde: Date, hasta: Date) {
+    const inicioDate = inicioMoment.toDate();
+    const finDate = finMoment.toDate();
+    seleccionDesde = inicioDate > desde ? inicioDate : desde;
+    seleccionHasta = finDate < hasta || hasta < inicioDate ? finDate : hasta;
+
+    $('input[name="datetimes"]').daterangepicker({
+      timePicker: true,
+      showDropdowns: true,
+      drops: "up",
+      startDate: moment(seleccionDesde),
+      endDate: moment(finMoment),
+      timePicker24Hour: true,
+      minDate: inicioMoment,
+      maxDate: finMoment,
+      locale: {
+        format: DATE_TIME_FORMAT
+      }
+    });
+
+    $('input[name="datetimes"]').on('apply.daterangepicker', function(ev, picker) {
+      //do something, like clearing an input
+        seleccionar(picker.startDate.toDate(), picker.endDate.toDate())
+  
+        brushG
+          .call(brush.move, [picker.startDate.toDate(), picker.endDate.toDate()].map(xScale));
+    });
+    
+    $('input[name="datetimes"]').val(moment(seleccionDesde).format(DATE_TIME_FORMAT) + 'hs - ' + moment(seleccionHasta).format(DATE_TIME_FORMAT)) + 'hs';
 
 
+    onCambioSeleccion && onCambioSeleccion(desde, hasta);
+  }
 
-
+  seleccionar(seleccionDesde, seleccionHasta);
 
 }

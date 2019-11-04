@@ -3,8 +3,11 @@ import { MapaCalor } from "./mapaCalor";
 import { Mapa, MapaEdit, ColorBarrio } from "./mapa";
 import { SelectorTiempo } from "./timeSelector";
 import * as d3 from 'd3';
-import { preprocesar, totalizarPorBarrio, convertirAMatriz, calcularMaxMin} from './datos';
+import $ from 'jquery';
+import jQuery from 'jquery';
+window['$'] = jQuery; 
 
+import { preprocesar, totalizarPorBarrio, convertirAMatriz, calcularMaxMin} from './datos';
 const rutaTados = require("../pruebas/datos/data/tweet-servicio-valoracion2.csv");
 
 document.addEventListener("DOMContentLoaded", function(event) { 
