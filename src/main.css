@@ -1,47 +1,32 @@
-html,
-body,
-.contenido {
-    height: 100%;
-    margin: 0;
-}
+h1{font-size: 1.5rem;text-align: center;border-bottom: 1px solid silver;}
+h2{font-size: 1rem;}
 
+footer{border-top: 2px solid black;}
 
-.contenido {
-    display: flex;
-    flex-flow: column;
-}
+.mapa,
+.mapaCalor{height: 455px;text-align: center;}
 
-.datos {
-    display: flex;
-    flex-flow: row wrap;
-}
-.datos > * {
-    display: flex;
-    flex: 1 auto;
-}
+.mapa text.label {font-size: 9pt;font-weight: 700;}
 
-.contenido > * {
-    flex: 1 100%
-}
-
-.selectorTiempo {
-    max-height: 10em;
-}
+.background.bar {fill: #ccc;}
+.foreground.bar {fill: steelblue;}
+.daterangepicker {background-color: lightsteelblue !important;}
 
 @media  only screen and (max-width: 1000px) {
-    .datos > * {
+    .mapa > * {
         flex: 1 100%;
     }
 }
 
 
-.background.bar {
-  fill: #ccc;
-}
-.foreground.bar {
-  fill: steelblue;
-}
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) {}
 
-.daterangepicker {
-    background-color: lightsteelblue !important;
-}
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {}

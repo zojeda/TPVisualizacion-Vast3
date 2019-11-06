@@ -1,21 +1,80 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="es">
   <head>
-    <meta charset="utf-8"/>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <!-- font awesome-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
     <title><%= htmlWebpackPlugin.options.title %></title>
     <link rel="shortcut icon" href="">
   </head>
   <body>
-    <div class="contenido">
-        <div class="datos"> 
-            <div class="mapa" >
+    <div class="container-fluid">
+      <h1>Mini-Challenge 3: Voice from the People</h1>
+      
+      <div class="box">
+        <div class="row">
+          <div class="col-md-5">
+            <h2 class="text-center">Mapa St. Himark</h2>
+            <!--dibujo del mapa-->
+            <div class="mapa"></div>
+          </div>
+          <div class="col-md-4">
+            <h2 class="text-center">Mapa de calor</h2>
+            <!--tabla 2x2 con mapa de calor-->
+            <div class="mapaCalor"></div>
+          </div>
+          <div class="col-md-3 ">
+            <h2 class="text-center">Nube de palabras</h2>
+            <!--nube de palabras-->
+            <div class="nubePalabras">
+              inserte aquí su nube de palabras :)
             </div>
-            <div class="mapaCalor">
-            </div>
+          </div>
         </div>
-        <div class="selectorTiempo">
-          <input type="text" name="datetimes" />
-        </div>
+      </div>
+
+      
     </div>
+    <footer>
+      <h2>Selector de tiempo</h2>
+      
+      
+      <form class="form-inline">
+        <!--boton ir al terremoto-->
+        <a href="javascript:void(0)" class="btn btn-outline-primary btn-sm mb-3">Ir al terremoto</a>
+
+        <!-- datetime range picker-->
+        <div class="input-group input-group-sm mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Momento desde-hasta</span>
+          </div>
+          <input type="text" class="form-control" name="datetimes" />
+        </div>
+        
+        <!-- botones para aumentar y bajar tiempo-->
+        <a href="javascript:void(0)" class="resta-tiempo mb-3" title="Mover la ventana de tiempo hacia atr&aacute;s">
+          <i class="fa fa-minus-circle"></i>
+        </a>
+        <a href="javascript:void(0)" class="suma-tiempo mb-3" title="Mover la ventana de tiempo hacia adelante">
+          <i class="fa fa-plus-circle"></i>
+        </a>
+      </form>
+      <!--grafico con las barras para seleccion del tiempo-->
+      <div class="selectorTiempo"></div>
+    </footer>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
   </body>
 </html>
