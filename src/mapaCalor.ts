@@ -285,16 +285,22 @@ export function MapaCalor(options: MapaCalorOpciones) {
     .attr("transform", function(d, i) {
       return "translate(0," + y(i) + ")";
     })
+
+  row
     .on("mouseover", handleMouseOverRow)
     .on("mouseout", handleMouseOutRow);
 
+  // FIX: cuando se muestan los datos por primera vez
+  // no se crean las celdas, solamente el grupo row
+  // se hace 3 veces al iniciar para que se creen
+  // las celdas y el texto dentro de ellas
   var cell = row
     .selectAll(".cell")
     .data(function(d) {
       return d;
     })
-
-   cell.enter()
+  
+  cell.enter()
     .append("g")
     .attr("class", "cell")
     .attr("transform", function(d, i) {

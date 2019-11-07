@@ -33,8 +33,8 @@ export function SelectorTiempo(opciones: SelectorTiempoOpciones, datos: Dato[], 
 
 
 
-  let seleccionDesde: Date = inicioMoment.toDate();
-  let seleccionHasta: Date = finMoment.toDate();
+  let seleccionDesde: Date = moment('2020-04-08T16:10:22.556Z').toDate();
+  let seleccionHasta: Date = moment('2020-04-08T20:24:48.721Z').toDate();
 
 
 
@@ -138,10 +138,14 @@ export function SelectorTiempo(opciones: SelectorTiempoOpciones, datos: Dato[], 
 
  
   function seleccionar(desde: Date, hasta: Date) {
+    if (desde == seleccionDesde && hasta == seleccionHasta) {
+      return
+    }
     const inicioDate = inicioMoment.toDate();
     const finDate = finMoment.toDate();
     seleccionDesde = inicioDate > desde ? inicioDate : desde;
     seleccionHasta = finDate < hasta || hasta < inicioDate ? finDate : hasta;
+
 
     $('input[name="datetimes"]').daterangepicker({
       timePicker: true,
@@ -172,5 +176,11 @@ export function SelectorTiempo(opciones: SelectorTiempoOpciones, datos: Dato[], 
   }
 
   seleccionar(seleccionDesde, seleccionHasta);
+
+  // horrible hack para evitar el primer mapa negro
+  onCambioSeleccion && onCambioSeleccion(seleccionDesde, seleccionHasta);
+  onCambioSeleccion && onCambioSeleccion(seleccionDesde, seleccionHasta);
+  brushG
+    .call(brush.move, [seleccionDesde, seleccionHasta].map(xScale));
 
 }
