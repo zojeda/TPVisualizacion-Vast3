@@ -11,13 +11,39 @@ export interface MapaCalorOpciones {
   end_color: string;
   minValue: number;
   maxValue: number;
-  callback_Mapa: (servicio: string, datos: number[], label: string[]) => void;
+  callback_Mapa: (servicio: string, datos: number[], label: string[], color: string[], inice: number) => void;
   callback_Barrio: (barrio: string) => void;
+}
+
+// Defino los colores para cada uno de los servicios
+const colorPorSerivicio: string[] = [];
+colorPorSerivicio[0] = "rgb(51, 54, 255,";
+colorPorSerivicio[1] = "rgb(252, 255, 51,";
+colorPorSerivicio[2] = "rgb(255, 51, 246,";
+colorPorSerivicio[3] = "rgb(51, 209, 255,";
+colorPorSerivicio[4] = "rgb(18, 224, 28,";
+
+export function indexOfMax (arr: number[]) {
+  if (arr.length === 0) {
+      return -1;
+  }
+
+  var max = arr[0];
+  var maxIndex = 0;
+
+  for (var i = 1; i < arr.length; i++) {
+      if (arr[i] > max) {
+          maxIndex = i;
+          max = arr[i];
+      }
+  }
+
+  return maxIndex;
 }
 
 export function MapaCalor(options: MapaCalorOpciones) {
   var margin = { top: 5, right: 5, bottom: 100, left: 120 },
-    width = 350,
+    width = 240,
     height = 350,
     container = options.padreSelector,
     labelscolData = options.labelscol,
@@ -65,7 +91,8 @@ export function MapaCalor(options: MapaCalorOpciones) {
     .attr("class", "column-label")
     .attr("transform", function(d, i) {
       return "translate(" + x(i) + "," + height + ")";
-    });
+    })
+    .style("stroke", function (d,i) {return colorPorSerivicio[i]+"255)"; });
 
   columnLabels
     .append("line")
@@ -116,8 +143,9 @@ export function MapaCalor(options: MapaCalorOpciones) {
       .text(function(d, i) {
         return d;
       })
-      .attr("font-size", "16px")
+      .attr("font-size", "12px")
       .attr("fill", "black")
+      .style("stroke", "black")
 
       var key = d3
       .select("#legend")
@@ -158,7 +186,6 @@ export function MapaCalor(options: MapaCalorOpciones) {
   let indiceColumnaSeleccionada = null;
 
   let actualidarDatos = function(data: number[][]) {
-    
     textoColumnas
       .on("mouseover", handleMouseOverCLabel)
       .on("mouseout", handleMouseOutCLabel);
@@ -168,7 +195,26 @@ export function MapaCalor(options: MapaCalorOpciones) {
       .on("mouseout", handleMouseOutRLabel);
 
     if (servicioSeleccionado) {
-      options.callback_Mapa(servicioSeleccionado,data.map(x => x[indiceColumnaSeleccionada]),labelsrowData);
+      options.callback_Mapa(servicioSeleccionado,data.map(x => x[indiceColumnaSeleccionada]),
+                labelsrowData,colorPorSerivicio,indiceColumnaSeleccionada);
+    }
+
+    if (servicioSeleccionado == null) {
+      const maxValueFila: number[] = [];
+      const maxColorFila: string[] = [];
+
+      for(let i = 0; i < data.length; i++)
+      {
+          //maxValueFila[i] = [];
+          maxValueFila[i] = d3.max(data[i]);
+          if (maxValueFila[i]>0) {
+            maxColorFila[i] = colorPorSerivicio[indexOfMax(data[i])];
+          } else {
+            maxColorFila[i] = "rgb(255, 255, 255,";
+          }
+          
+      }
+      options.callback_Mapa(servicioSeleccionado,maxValueFila,labelsrowData,maxColorFila,0);
     }
 
 
@@ -195,7 +241,7 @@ export function MapaCalor(options: MapaCalorOpciones) {
       .attr("fill", "rgb(0, 78, 255)");
       servicioSeleccionado = d;
       indiceColumnaSeleccionada = i;
-      options.callback_Mapa(d,data.map(x => x[i]),labelsrowData);
+      options.callback_Mapa(d,data.map(x => x[i]),labelsrowData,colorPorSerivicio,indiceColumnaSeleccionada);
     }
   
     function handleMouseOutCLabel(d, i){

@@ -8,7 +8,8 @@ import jQuery from 'jquery';
 window['$'] = jQuery; 
 
 import { preprocesar, totalizarPorBarrio, convertirAMatriz, calcularMaxMin} from './datos';
-const rutaTados = require("../pruebas/datos/data/tweet-servicio-valoracion2.csv");
+//const rutaTados = require("../pruebas/datos/data/tweet-servicio-valoracion2.csv");
+const rutaTados = require("../R/data/tweet-servicio-valoracion1_coma.csv");
 
 document.addEventListener("DOMContentLoaded", function(event) { 
 	d3.csv(rutaTados, preprocesar)

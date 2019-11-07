@@ -72,16 +72,42 @@ export function ColorBarrio(barrio: string){
     }
 }
 
-export function MapaEdit(servicio: string, datos: number[], labels: string[]){
-    var maxValue = Math.max.apply(null, datos);
-    var i = 0;
-    labels.forEach(function (barrio) {
+export function MapaEdit(servicio: string, datos: number[], labels: string[], color: string[], indice: number){
+    if (servicio) {
+        var maxValue = Math.max.apply(null, datos);
+        var i = 0;
+        if (maxValue > 0) {
+            labels.forEach(function (barrio) {
+            barrio = barrio.replace(/\s/g,'-');
+            var selectBarrio = '#'; 
+            var selectBarrio = selectBarrio.concat(barrio); 
+            d3.select(selectBarrio).transition().duration(200)
+            //.attr("fill", "rgb(0, 78, 255,"+(datos[i]/maxValue)+")");
+            .attr("fill", color[indice]+(datos[i]/maxValue)+")");
+            i++;
+            })
+        } else {
+            labels.forEach(function (barrio) {
+            barrio = barrio.replace(/\s/g,'-');
+            var selectBarrio = '#'; 
+            var selectBarrio = selectBarrio.concat(barrio); 
+            d3.select(selectBarrio).transition().duration(200)
+            .attr("fill", "none");
+            i++;
+            })
+        }
+    }
+    if (servicio == null) {
+        var maxValue = Math.max.apply(null, datos);
+        var i = 0;
+        labels.forEach(function (barrio) {
         barrio = barrio.replace(/\s/g,'-');
         var selectBarrio = '#'; 
         var selectBarrio = selectBarrio.concat(barrio); 
         d3.select(selectBarrio).transition().duration(200)
-        .attr("fill", "rgb(0, 78, 255,"+(datos[i]/maxValue)+")");
+        .attr("fill", color[i]+(datos[i]/maxValue)+")");
         i++;
-    })
+        })
+    }
 }
 
