@@ -246,6 +246,25 @@ export function MapaCalor(options: MapaCalorOpciones) {
   
     function handleMouseOutCLabel(d, i){
       //alert('Out'+d);
+      columnLabels.selectAll("text")
+      .data(labelscolData).transition().duration(200)
+      .attr("font-size", "16px")
+      .attr("fill", "black");
+
+      servicioSeleccionado = null;
+      const maxValueFila: number[] = [];
+      const maxColorFila: string[] = [];
+      for(let i = 0; i < data.length; i++)
+      {
+          //maxValueFila[i] = [];
+          maxValueFila[i] = d3.max(data[i]);
+          if (maxValueFila[i]>0) {
+            maxColorFila[i] = colorPorSerivicio[indexOfMax(data[i])];
+          } else {
+            maxColorFila[i] = "rgb(255, 255, 255,";
+          }  
+      }
+      options.callback_Mapa(servicioSeleccionado,maxValueFila,labelsrowData,maxColorFila,0);
     }
 
 
