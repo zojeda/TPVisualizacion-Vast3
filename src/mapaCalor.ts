@@ -43,7 +43,7 @@ export function indexOfMax (arr: number[]) {
 
 export function MapaCalor(options: MapaCalorOpciones) {
   var margin = { top: 5, right: 5, bottom: 100, left: 120 },
-    width = 240,
+    width = 200,
     height = 350,
     container = options.padreSelector,
     labelscolData = options.labelscol,

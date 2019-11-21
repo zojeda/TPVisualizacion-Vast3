@@ -2,6 +2,7 @@ import "./main.css";
 import { MapaCalor } from "./mapaCalor";
 import { Mapa, MapaEdit, ColorBarrio } from "./mapa";
 import { SelectorTiempo } from "./timeSelector";
+import { nubes } from "./nubes";
 import * as d3 from 'd3';
 import $ from 'jquery';
 import jQuery from 'jquery';
@@ -18,6 +19,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		  padreSelector: ".mapa"
 		});
 		
+		nubes(".nubePalabras");
 
 		let datosFiltrados =  datos;
 		let datosPorBarrio = totalizarPorBarrio(datosFiltrados);
