@@ -32,13 +32,42 @@ export function SelectorTiempo(opciones: SelectorTiempoOpciones, datos: Dato[], 
   const height = 140 - ( margin.top + margin.bottom);
 
 
+  let horaTerremoto: Date = moment('2020-04-08T11:13:00.000Z').toDate();
 
-  let seleccionDesde: Date = moment('2020-04-08T16:10:22.556Z').toDate();
-  let seleccionHasta: Date = moment('2020-04-08T20:24:48.721Z').toDate();
+  let seleccionDesde: Date = moment('2020-04-08T11:13:00.000Z').toDate();
+  let seleccionHasta: Date = moment('2020-04-08T15:13:00.000Z').toDate();
 
 
+  d3.select("#ir_terremoto_btb")
+    .on('click', () => {
+      const ventanaActual = moment(seleccionHasta).diff(moment(seleccionDesde))
+      let desde = horaTerremoto;
+      let hasta = moment(horaTerremoto).add(ventanaActual).toDate()
+      seleccionar(desde, hasta)
+      brushG
+      .call(brush.move, [desde, hasta].map(xScale));
+    })
 
 
+    d3.select("#mover_ventana_der")
+    .on('click', () => {
+      const vetanaActual = moment(seleccionHasta).diff(moment(seleccionDesde))
+      let desde = seleccionHasta;
+      let hasta = moment(seleccionHasta).add(vetanaActual).toDate();
+      seleccionar(desde, hasta)
+      brushG
+      .call(brush.move, [desde, hasta].map(xScale));
+    })
+
+    d3.select("#mover_ventana_izq")
+    .on('click', () => {
+      const vetanaActual = moment(seleccionDesde).diff(moment(seleccionHasta))
+      let desde = moment(seleccionDesde).add(vetanaActual).toDate()
+      let hasta = seleccionDesde;
+      seleccionar(desde, hasta)
+      brushG
+      .call(brush.move, [desde, hasta].map(xScale));
+    })
 
   const svg = d3
     .select(opciones.padreSelector)
