@@ -4,10 +4,10 @@ import { image } from "d3";
 //https://blockbuilder.org/micahstubbs/d393bcfde0228430c00b  -> Fuente principal.
 //https://www.d3-graph-gallery.com/graph/line_select.html    -> Solución de un error.
 
-const hablaAntes = require('../data/hablaAntes.png');
-const hablaDespues = require('../data/hablaDespues.png');
-const sienteAntes = require('../data/sienteAntes.png');
-const sienteDespues = require('../data/sienteDespues.png');
+const hablaAntes = require('../data/hablan_antes2.png');
+const hablaDespues = require('../data/hablan_despues2.png');
+const sienteAntes = require('../data/AntesSent2.png');
+const sienteDespues = require('../data/sent_despues2.png');
 const dropdownOpciones = ["¿De qué se habla? (Antes)", "¿De qué se habla? (Después)", 
                           "¿Qué se siente? (Antes)", "¿Qué se siente? (Después)"];
                 
@@ -19,6 +19,7 @@ export function nubes(contenedor: string) {
     var selector = d3.select(contenedor)
         .append("select")
         .attr("id", "dropdown")
+        .style("transform", "translate(20%, 0%)")
         .selectAll("option")
         .data(dropdownOpciones)
         .enter().append("option")
@@ -44,8 +45,8 @@ export function nubes(contenedor: string) {
         //Cargo imagen según indice del selector
         var myimage = svg.append('image')
             .attr('xlink:href', imagenes[index])
-            .attr('width', 275)
-            .attr('height', 275)
+            .attr('width', 300)
+            .attr('height', 400)
 
     }
 
@@ -53,15 +54,15 @@ export function nubes(contenedor: string) {
 
     var svg = d3.select(contenedor)
     .append("svg")
-    .attr('width', 275)
-    .attr('height', 275)
+    .attr('width', 300)
+    .attr('height', 400)
     .attr('stroke', 'black')
     .attr("fill", "red");
 
     var myimage = svg.append('image')
             .attr('xlink:href', imagenes[index])
-            .attr('width', 275)
-            .attr('height', 275)
+            .attr('width', 300)
+            .attr('height', 400)
 
     //console.log("Nubes Fin");
 }

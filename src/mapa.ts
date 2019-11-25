@@ -26,12 +26,12 @@ function crearMapa(json: any, svg: d3.Selection<SVGSVGElement, unknown, HTMLElem
             .attr('stroke', 'black')
             .attr("id", function(d, i) { return json.features[i].properties.Nbrhood.replace(/\s/g,'-'); })
             .on("mouseover", function() {
-                d3.select(this)
-                    .attr("fill", "red");
+                //d3.select(this)
+                //    .attr("fill", "red");
             })
             .on("mouseout", function(d, i) {
-                d3.select(this)
-                    .attr("fill", 'white');
+                //d3.select(this)
+                //    .attr("fill", 'white');
             });
     
     // Agrega los nombres de cada barrio al mapa.
@@ -100,6 +100,7 @@ export function MapaEdit(servicio: string, datos: number[], labels: string[], co
     if (servicio == null) {
         var maxValue = Math.max.apply(null, datos);
         var i = 0;
+        if (maxValue > 0) {
         labels.forEach(function (barrio) {
         barrio = barrio.replace(/\s/g,'-');
         var selectBarrio = '#'; 
@@ -108,6 +109,16 @@ export function MapaEdit(servicio: string, datos: number[], labels: string[], co
         .attr("fill", color[i]+(datos[i]/maxValue)+")");
         i++;
         })
+        } else {
+            labels.forEach(function (barrio) {
+            barrio = barrio.replace(/\s/g,'-');
+            var selectBarrio = '#'; 
+            var selectBarrio = selectBarrio.concat(barrio); 
+            d3.select(selectBarrio).transition().duration(200)
+            .attr("fill", "none");
+            i++;
+             })
+            }
     }
 }
 
