@@ -11,7 +11,7 @@ function crearMapa(json: any, svg: d3.Selection<SVGSVGElement, unknown, HTMLElem
 
     // la proyeccion se calcula así: https://www.d3indepth.com/geographic/#projection-functions
     var projection = d3.geoMercator()
-        .fitSize([600, 450], json);
+        .fitSize([500, 375], json);
  
     var geoGenerator = d3.geoPath()
         .projection(projection);
@@ -41,7 +41,7 @@ function crearMapa(json: any, svg: d3.Selection<SVGSVGElement, unknown, HTMLElem
             .enter()
             .append("text")
             .attr("class", "label")
-            .attr("transform", function(d,i) { return "translate(" + [geoGenerator.centroid(json.features[i])[0]-(json.features[0].properties.Nbrhood.length/2*6),geoGenerator.centroid(json.features[i])[1]] + ")"; })
+            .attr("transform", function(d,i) { return "translate(" + [geoGenerator.centroid(json.features[i])[0]-(json.features[i].properties.Nbrhood.length/2*6),geoGenerator.centroid(json.features[i])[1]] + ")"; })
             .text(function(d,i) { return json.features[i].properties.Nbrhood;} );
 
 }

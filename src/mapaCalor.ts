@@ -17,11 +17,11 @@ export interface MapaCalorOpciones {
 
 // Defino los colores para cada uno de los servicios
 const colorPorSerivicio: string[] = [];
-colorPorSerivicio[0] = "rgb(51, 54, 255,";
-colorPorSerivicio[1] = "rgb(252, 255, 51,";
-colorPorSerivicio[2] = "rgb(255, 51, 246,";
-colorPorSerivicio[3] = "rgb(51, 209, 255,";
-colorPorSerivicio[4] = "rgb(18, 224, 28,";
+colorPorSerivicio[0] = "rgb(28, 199, 240,";
+colorPorSerivicio[1] = "rgb(111, 160, 176,";
+colorPorSerivicio[2] = "rgb(153,0,204,";
+colorPorSerivicio[3] = "rgb(255,0,0,";
+colorPorSerivicio[4] = "rgb(77,218,72,";
 
 export function indexOfMax (arr: number[]) {
   if (arr.length === 0) {
@@ -42,9 +42,9 @@ export function indexOfMax (arr: number[]) {
 }
 
 export function MapaCalor(options: MapaCalorOpciones) {
-  var margin = { top: 5, right: 10, bottom: 100, left: 115 },
+  var margin = { top: 5, right: 10, bottom: 100, left: 100 },
     width = 190,
-    height = 350,
+    height = 320,
     container = options.padreSelector,
     labelscolData = options.labelscol,
     labelsrowData = options.labelsrow,

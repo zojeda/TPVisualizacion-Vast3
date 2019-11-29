@@ -1,16 +1,17 @@
-h1{font-size: 1.5rem;text-align: center;border-bottom: 1px solid silver;}
-h2{font-size: 1rem;}
-
-footer{border-top: 2px solid black;}
+h1{font-size: 1rem;text-align: center;font-family: 'Roboto', sans-serif;padding: 5px 0 0;font-weight: 700;}
+h2{font-size: 0.8rem;background: #5696AC;color:white;font-family: 'Roboto', sans-serif;padding: 5px;font-weight: 400;}
 
 .mapa,
-.mapaCalor{height: 455px;text-align: center;}
-
-.mapa text.label {font-size: 9pt;font-weight: 700;}
+.mapaCalor{height: 410px;text-align: center;}
+.mapa svg{width: 500px;height: 400px;}
+.mapaCalor svg{width: 300px;}
+.mapa text.label {font-size: 8pt;font-weight: 700;}
 
 .background.bar {fill: #ccc;}
 .foreground.bar {fill: steelblue;}
 .daterangepicker {background-color: lightsteelblue !important;}
+
+.bt-tiempo{margin-left: 5px;}
 
 @media  only screen and (max-width: 1000px) {
     .mapa > * {

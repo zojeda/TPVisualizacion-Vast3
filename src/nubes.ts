@@ -46,7 +46,7 @@ export function nubes(contenedor: string) {
         var myimage = svg.append('image')
             .attr('xlink:href', imagenes[index])
             .attr('width', 300)
-            .attr('height', 400)
+            .attr('height', 350)
 
     }
 
@@ -55,14 +55,14 @@ export function nubes(contenedor: string) {
     var svg = d3.select(contenedor)
     .append("svg")
     .attr('width', 300)
-    .attr('height', 400)
+    .attr('height', 350)
     .attr('stroke', 'black')
     .attr("fill", "red");
 
     var myimage = svg.append('image')
             .attr('xlink:href', imagenes[index])
             .attr('width', 300)
-            .attr('height', 400)
+            .attr('height', 350)
 
     //console.log("Nubes Fin");
 }

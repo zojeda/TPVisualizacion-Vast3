@@ -27,7 +27,7 @@ export function SelectorTiempo(opciones: SelectorTiempoOpciones, datos: Dato[], 
   .entries(datos)
   .map(d => Object.assign({}, d, {timestamp: new Date(d.key)}));
 
-  const margin = {top: 10, right: 10, bottom: 10, left: 60};
+  const margin = {top: 10, right: 10, bottom: 10, left: 30};
   const width = 1400 - ( margin.left + margin.right);
   const height = 140 - ( margin.top + margin.bottom);
 

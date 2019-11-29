@@ -11,27 +11,29 @@
     <!-- font awesome-->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+
     <title><%= htmlWebpackPlugin.options.title %></title>
     <link rel="shortcut icon" href="">
   </head>
   <body>
     <div class="container-fluid">
-      <h1>Mini-Challenge 3: Voice from the People</h1>
+      <h1>MINI-CHALLENGE 3: Voice from the People</h1>
       
       <div class="box">
         <div class="row">
-          <div class="col-md-6">
-            <h2 class="text-center">Mapa St. Himark</h2>
+          <div class="col-md-5">
+            <h2 class="text-center">MAPA St. Himark</h2>
             <!--dibujo del mapa-->
             <div class="mapa"></div>
           </div>
-          <div class="col-md-3">
-            <h2 class="text-center">Mapa de calor</h2>
+          <div class="col-md-4">
+            <h2 class="text-center">MAPA DE CALOR</h2>
             <!--tabla 2x2 con mapa de calor-->
             <div class="mapaCalor"></div>
           </div>
-          <div class="col-md-2 ">
-            <h2 class="text-center">Nube de palabras</h2>
+          <div class="col-md-3">
+            <h2 class="text-center">NUBE DE PALABRAS</h2>
             <!--nube de palabras-->
             <div class="nubePalabras">
               <!--inserte aquí su nube de palabras :)-->
@@ -43,31 +45,34 @@
       
     </div>
     <footer>
-      <h2>Selector de tiempo</h2>
-      
-      
-      <form class="form-inline">
-        <!--boton ir al terremoto-->
-        <a href="javascript:void(0)" name="ir_terremoto_btb" id="ir_terremoto_btb" class="btn btn-outline-primary btn-sm mb-3">Ir al terremoto</a>
+      <div class="container-fluid">
 
-        <!-- datetime range picker-->
-        <div class="input-group input-group-sm mb-3">
-          <div class="input-group-prepend">
-            <span class="input-group-text">Momento desde-hasta</span>
-          </div>
-          <input type="text" class="form-control" name="datetimes" />
-        </div>
+        <h2>Selector de tiempo</h2>
         
-        <!-- botones para aumentar y bajar tiempo-->
-        <a href="javascript:void(0)" name="mover_ventana_izq" id="mover_ventana_izq" class="resta-tiempo mb-3" title="Mover la ventana de tiempo hacia atr&aacute;s">
-          <i class="fa fa-minus-circle"></i>
-        </a>
-        <a href="javascript:void(0)" name="mover_ventana_der" id="mover_ventana_der" class="suma-tiempo mb-3" title="Mover la ventana de tiempo hacia adelante">
-          <i class="fa fa-plus-circle"></i>
-        </a>
-      </form>
-      <!--grafico con las barras para seleccion del tiempo-->
-      <div class="selectorTiempo"></div>
+        
+        <form class="form-inline">
+          <!--boton ir al terremoto-->
+          <a href="javascript:void(0)" name="ir_terremoto_btb" id="ir_terremoto_btb" class="btn btn-primary btn-sm mb-3">Ir al terremoto</a>
+
+          <!-- datetime range picker-->
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Momento desde-hasta</span>
+            </div>
+            <input type="text" class="form-control" name="datetimes" />
+          </div>
+          
+          <!-- botones para aumentar y bajar tiempo-->
+          <a href="javascript:void(0)" name="mover_ventana_izq" id="mover_ventana_izq" class="bt-tiempo resta-tiempo mb-3" title="Mover la ventana de tiempo hacia atr&aacute;s">
+            <i class="fa fa-minus-circle"></i>
+          </a>
+          <a href="javascript:void(0)" name="mover_ventana_der" id="mover_ventana_der" class="bt-tiempo suma-tiempo mb-3" title="Mover la ventana de tiempo hacia adelante">
+            <i class="fa fa-plus-circle"></i>
+          </a>
+        </form>
+        <!--grafico con las barras para seleccion del tiempo-->
+        <div class="selectorTiempo"></div>
+      </div>
     </footer>
 
 
