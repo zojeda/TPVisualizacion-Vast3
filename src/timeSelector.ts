@@ -27,16 +27,15 @@ export function SelectorTiempo(opciones: SelectorTiempoOpciones, datos: Dato[], 
   .entries(datos)
   .map(d => Object.assign({}, d, {timestamp: new Date(d.key)}));
 
-  const margin = {top: 10, right: 10, bottom: 10, left: 30};
+  const margin = {top: 10, right: 10, bottom: 10, left: 31};
   const width = 1400 - ( margin.left + margin.right);
   const height = 140 - ( margin.top + margin.bottom);
 
 
-  let horaTerremoto: Date = moment('2020-04-08T11:13:00.000Z').toDate();
+  let horaTerremoto: Date = moment('2020-04-08T08:36:00-03:00').toDate();
 
-  let seleccionDesde: Date = moment('2020-04-08T11:13:00.000Z').toDate();
-  let seleccionHasta: Date = moment('2020-04-08T15:13:00.000Z').toDate();
-
+  let seleccionDesde: Date = moment('2020-04-08T08:36:00-03:00').toDate();
+  let seleccionHasta: Date = moment('2020-04-08T13:36:00-03:00').toDate();
 
   d3.select("#ir_terremoto_btb")
     .on('click', () => {
